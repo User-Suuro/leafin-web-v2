@@ -1,5 +1,5 @@
 "use client";
 
 export default function Home() {
-  return <main className="flex"></main>;
+  return <main className="flex"> Home page</main>;
 }

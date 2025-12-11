@@ -13,18 +13,6 @@ const bodyFont = Poppins({
   variable: "--font-body",
 });
 
-const luckiestGuy = Luckiest_Guy({
-  subsets: ["latin"],
-  weight: "400", // only available weight
-  variable: "--font-luckiest",
-});
-
-const cormorant = Cormorant_Garamond({
-  subsets: ["latin"],
-  weight: ["600"], // semibold
-  variable: "--font-cormorant",
-});
-
 export const metadata: Metadata = {
   title: "Leafin Things",
   icons: {
@@ -40,10 +28,7 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <body
-        className={`${bodyFont.variable} 
-                        ${luckiestGuy.variable} 
-                        ${cormorant.variable} 
-                        scrollbar-gutter-stable scroll-smooth`}
+        className={`${bodyFont.variable} scrollbar-gutter-stable scroll-smooth`}
       >
         {children}
       </body>

@@ -1,4 +1,16 @@
 users
-expenses
-schedule
+ - utility workers
+ - managers
+ - notification
+
 monitoring
+ - current state
+ - tabulation of data
+
+schedule
+ - ui controls
+ - arduino to esp api responsess
+
+expenses
+ - ROI
+ - approve / disapprove utility personnel expense request

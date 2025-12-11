@@ -21,17 +21,19 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
+import { PATH } from "@/lib/path";
 
 const sidebarItems = [
   {
     title: "Dashboard",
     icon: LayoutDashboard,
-    href: "/system/dashboard",
+    href: PATH.SYSTEM,
   },
+  /*
   {
     title: "Monitoring",
     icon: Activity,
-    href: "/system/monitoring",
+    href: PATH,
   },
   {
     title: "Batch",
@@ -63,6 +65,7 @@ const sidebarItems = [
     icon: History,
     href: "/system/logs",
   },
+  */
 ];
 
 export function Sidebar() {

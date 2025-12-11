@@ -1,6 +1,6 @@
 import "@/styles/globals.css";
 
-export default function SystemContentLayout({
+export default function SystemRootLayout({
   children,
 }: {
   children: React.ReactNode;

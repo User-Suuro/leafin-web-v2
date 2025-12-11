@@ -5,10 +5,12 @@ export const PATH = {
   CONTACT: "/contact",
 
   // SYSTEM
-  SYSTEM: "/system",
+  SYSTEM: "/sys",
 
   // AUTH
-  SIGNIN: "/system/signin",
+  SIGNIN: "/sys/sign-in",
+  FORGOTPASS: "/sys/forgot-password",
+  RESETPASS: "/sys/reset-password",
 };
 
 export const API_PATH = {

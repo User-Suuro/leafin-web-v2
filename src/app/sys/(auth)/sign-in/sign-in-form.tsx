@@ -2,7 +2,6 @@
 
 import { LoadingButton } from "@/components/loading-button";
 import { PasswordInput } from "@/components/password-input";
-import { Button } from "@/components/ui/button";
 import {
   Card,
   CardContent,
@@ -29,6 +28,7 @@ import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import { z } from "zod";
+import { PATH } from "@/lib/path";
 
 const signInSchema = z.object({
   email: z.email({ message: "Please enter a valid email" }),
@@ -76,22 +76,7 @@ export function SignInForm() {
       setError(error.message || "Something went wrong");
     } else {
       toast.success("Signed in successfully!");
-      router.push(redirect ?? "/");
-    }
-  }
-
-  async function handleSocialSignIn(provider: "google") {
-    setError(null);
-    setLoading(true);
-    const { error } = await authClient.signIn.social({
-      provider,
-      callbackURL: redirect ?? "/profile",
-    });
-
-    setLoading(false);
-
-    if (error) {
-      setError(error.message || "Something went wrong");
+      router.push(redirect ?? PATH.SYSTEM);
     }
   }
 
