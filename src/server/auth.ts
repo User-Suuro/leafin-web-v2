@@ -3,10 +3,12 @@ import { betterAuth } from "better-auth";
 import { createAuthMiddleware, APIError } from "better-auth/api";
 import { db } from "./drizzle";
 import { passwordSchema } from "@/lib/zod-schema/validation";
+import { user, session, verification, account } from "./schema/auth-schema";
 
 export const auth = betterAuth({
   database: drizzleAdapter(db, {
     provider: "mysql",
+    schema: { user, session, verification, account },
   }),
 
   emailAndPassword: {
@@ -34,9 +36,9 @@ export const auth = betterAuth({
       // validate password in server sside
 
       if (
-        ctx.path === "/sign-up/email" ||
-        ctx.path === "/reset-password" ||
-        ctx.path === "/change-password"
+        ctx.path === "/sys/sign-up/email" ||
+        ctx.path === "/sys/reset-password" ||
+        ctx.path === "/sys/change-password"
       ) {
         const password = ctx.body.password || ctx.body.newPassword;
         const { error } = passwordSchema.safeParse(password);

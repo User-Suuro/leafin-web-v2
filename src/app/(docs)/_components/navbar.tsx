@@ -17,14 +17,15 @@ import {
 } from "lucide-react";
 import icon from "@/assets/logo.png";
 import { Button } from "@/components/ui/button";
+import { PATH } from "@/lib/path";
 
 export default function Navbar() {
   const pathname = usePathname();
 
   const navItems = [
-    { href: "/", label: "Home", icon: <Home size={18} /> },
-    { href: "/about", label: "About", icon: <FileText size={18} /> },
-    { href: "/contact", label: "Contact", icon: <Contact size={18} /> },
+    { href: PATH.HOME, label: "Home", icon: <Home size={18} /> },
+    { href: PATH.ABOUT, label: "About", icon: <FileText size={18} /> },
+    { href: PATH.CONTACT, label: "Contact", icon: <Contact size={18} /> },
   ];
 
   return (
@@ -65,8 +66,8 @@ export default function Navbar() {
             ))}
           </NavigationMenuList>
         </NavigationMenu>
-        <Link href="/system">
-          <Button variant={"outline"} className="hover:cursor-pointer">
+        <Link href={PATH.SYSTEM} className="hover:cursor-pointer">
+          <Button variant={"outline"}>
             Go to System <ArrowRight />
           </Button>
         </Link>

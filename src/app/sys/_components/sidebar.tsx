@@ -12,6 +12,7 @@ import {
   CreditCard,
   History,
   Fish,
+  Users2Icon,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
@@ -21,17 +22,24 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
+import { PATH } from "@/lib/path";
 
 const sidebarItems = [
   {
     title: "Dashboard",
     icon: LayoutDashboard,
-    href: "/system/dashboard",
+    href: PATH.SYSTEM,
   },
+  {
+    title: "Users",
+    icon: Users2Icon,
+    href: PATH.USERS,
+  },
+  /*
   {
     title: "Monitoring",
     icon: Activity,
-    href: "/system/monitoring",
+    href: PATH,
   },
   {
     title: "Batch",
@@ -63,6 +71,7 @@ const sidebarItems = [
     icon: History,
     href: "/system/logs",
   },
+  */
 ];
 
 export function Sidebar() {
@@ -106,33 +115,6 @@ export function Sidebar() {
               </Tooltip>
             );
           })}
-
-          {/* Settings - pushed to bottom */}
-          <div className="mt-auto">
-            <Tooltip delayDuration={0}>
-              <TooltipTrigger asChild>
-                <Button
-                  variant={pathname === "/settings" ? "default" : "ghost"}
-                  size="icon"
-                  className={cn(
-                    "h-9 w-9 transition-colors",
-                    pathname === "/settings"
-                      ? "bg-primary text-primary-foreground shadow-sm"
-                      : "hover:bg-accent hover:text-accent-foreground"
-                  )}
-                  asChild
-                >
-                  <Link href="/settings">
-                    <Settings className="h-4 w-4" />
-                    <span className="sr-only">Settings</span>
-                  </Link>
-                </Button>
-              </TooltipTrigger>
-              <TooltipContent side="right" className="flex items-center gap-4">
-                Settings
-              </TooltipContent>
-            </Tooltip>
-          </div>
         </nav>
       </div>
     </TooltipProvider>
