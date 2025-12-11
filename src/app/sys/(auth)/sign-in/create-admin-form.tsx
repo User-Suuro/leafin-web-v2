@@ -77,7 +77,6 @@ export function CreateAdminForm() {
         email,
         password,
         name,
-        role: USER_ROLES.SUPERADMIN,
       });
       if (!response.error) {
         toast.success("Admin created successfully");

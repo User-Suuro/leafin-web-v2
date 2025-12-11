@@ -1,8 +1,23 @@
 import { drizzleAdapter } from "better-auth/adapters/drizzle";
 import { betterAuth } from "better-auth";
 import { createAuthMiddleware, APIError } from "better-auth/api";
+import { admin } from "better-auth/plugins";
 import { db } from "./db/drizzle";
-import { user, session, verification, account } from "./db/schema/auth-schema";
+import {
+  user,
+  session,
+  verification,
+  account,
+  USER_ROLES,
+} from "./db/schema/auth-schema";
+import {
+  ac,
+  admin as adminRole,
+  user as userRole,
+  superAdmin,
+  utility,
+} from "./auth-utils/permissions";
+import { eq } from "drizzle-orm";
 import { passwordSchema } from "@/lib/zod-schema/validation";
 
 export const auth = betterAuth({
@@ -10,6 +25,17 @@ export const auth = betterAuth({
     provider: "mysql",
     schema: { user, session, verification, account },
   }),
+
+  plugins: [
+    admin({
+      ac,
+      roles: {
+        [USER_ROLES.SUPERADMIN]: superAdmin,
+        [USER_ROLES.UTILITY]: utility,
+        [USER_ROLES.ADMIN]: adminRole,
+      },
+    }),
+  ],
 
   emailAndPassword: {
     enabled: true,
@@ -23,12 +49,7 @@ export const auth = betterAuth({
   },
 
   user: {
-    additionalFields: {
-      role: {
-        type: "string",
-        input: true,
-      },
-    },
+    // additionalFields removed as role is managed by admin plugin
   },
 
   hooks: {
@@ -50,8 +71,27 @@ export const auth = betterAuth({
         }
       }
     }),
+
+    // auto promotion of first user to super admin
+
+    after: createAuthMiddleware(async (ctx) => {
+      if (ctx.path === "/sign-up/email") {
+        const usersCount = await db.select().from(user).execute();
+        if (usersCount.length === 1) {
+          const newUser = usersCount[0];
+          await db
+            .update(user)
+            .set({
+              role: USER_ROLES.SUPERADMIN,
+            })
+            .where(eq(user.id, newUser.id));
+        }
+      }
+    }),
   },
 });
 function sendMail(arg0: { to: string; subject: string; text: string }) {
   throw new Error("Function not implemented.");
 }
+
+export type Auth = typeof auth;
