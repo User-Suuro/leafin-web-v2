@@ -3,6 +3,8 @@ import type { Metadata } from "next";
 import logo from "@/assets/branding/favicon.svg";
 import { Poppins } from "next/font/google";
 
+import { Toaster } from "@/components/ui/sonner";
+
 const bodyFont = Poppins({
   subsets: ["latin"],
   weight: ["400", "500"],
@@ -27,6 +29,7 @@ export default function RootLayout({
         className={`${bodyFont.variable} scrollbar-gutter-stable scroll-smooth`}
       >
         {children}
+        <Toaster />
       </body>
     </html>
   );

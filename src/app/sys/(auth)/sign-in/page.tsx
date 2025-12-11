@@ -3,17 +3,26 @@ import { Suspense } from "react";
 import { Button } from "@/components/ui/button";
 import { SignInForm } from "./sign-in-form";
 import { PATH } from "@/lib/path";
-import { ArrowLeft } from "lucide-react";
+import { ArrowLeft, Loader2 } from "lucide-react";
 import { USER_ROLES, user } from "@/lib/db/schema/auth-schema";
 import { eq } from "drizzle-orm";
 import { db } from "@/lib/db/drizzle";
+import { CreateAdminForm } from "./create-admin-form";
 
 export default async function SignIn() {
+  const hasSuperAdmin = await checkIfHasSuperAdmin();
+
   return (
     <main className="flex flex-col min-h-svh justify-center px-4">
       <div className="w-full max-w-md mx-auto flex flex-col gap-6 items-start">
-        <Suspense fallback={<div>Loading form...</div>}>
-          <SignInForm />
+        <Suspense
+          fallback={
+            <div className="flex items-center gap-2">
+              Loading form... <Loader2 />
+            </div>
+          }
+        >
+          {hasSuperAdmin ? <SignInForm /> : <CreateAdminForm />}
         </Suspense>
 
         <Link href={PATH.HOME}>

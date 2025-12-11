@@ -87,6 +87,8 @@ export const verification = mysqlTable(
   (table) => [index("verification_identifier_idx").on(table.identifier)]
 );
 
+// foreign keys
+
 export const userRelations = relations(user, ({ many }) => ({
   sessions: many(session),
   accounts: many(account),

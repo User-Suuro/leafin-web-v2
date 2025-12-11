@@ -3,8 +3,8 @@ import { env } from "@/lib/zod-schema/env";
 
 export default defineConfig({
   dialect: "mysql",
-  schema: "./src/server/schema/*",
-  out: "./src/server/migrations",
+  schema: "./src/lib/db/schema",
+  out: "./src/lib/db/migrations",
   dbCredentials: {
     url: env.DB_URI,
   },
