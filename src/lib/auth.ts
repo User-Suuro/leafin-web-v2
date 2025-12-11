@@ -1,15 +1,36 @@
 import { drizzleAdapter } from "better-auth/adapters/drizzle";
 import { betterAuth } from "better-auth";
 import { createAuthMiddleware, APIError } from "better-auth/api";
-import { db } from "./drizzle";
+import { admin } from "better-auth/plugins";
+import { db } from "./db/drizzle";
+import { user, session, verification, account } from "./db/schema/auth-schema";
+import {
+  ac,
+  admin as adminRole,
+  user as userRole,
+  superAdmin,
+  utility,
+  ROLES,
+} from "./auth-utils/permissions";
+import { eq } from "drizzle-orm";
 import { passwordSchema } from "@/lib/zod-schema/validation";
-import { user, session, verification, account } from "./schema/auth-schema";
 
 export const auth = betterAuth({
   database: drizzleAdapter(db, {
     provider: "mysql",
     schema: { user, session, verification, account },
   }),
+
+  plugins: [
+    admin({
+      ac,
+      roles: {
+        [ROLES.SUPERADMIN]: superAdmin,
+        [ROLES.UTILITY]: utility,
+        [ROLES.ADMIN]: adminRole,
+      },
+    }),
+  ],
 
   emailAndPassword: {
     enabled: true,
@@ -23,12 +44,7 @@ export const auth = betterAuth({
   },
 
   user: {
-    additionalFields: {
-      role: {
-        type: "string",
-        input: false,
-      },
-    },
+    // additionalFields removed as role is managed by admin plugin
   },
 
   hooks: {
@@ -50,8 +66,28 @@ export const auth = betterAuth({
         }
       }
     }),
+
+    // auto promotion of first user to super admin
+
+    after: createAuthMiddleware(async (ctx) => {
+      if (ctx.path === "/sign-up/email") {
+        const usersCount = await db.select().from(user).execute();
+        if (usersCount.length === 1) {
+          const newUser = usersCount[0];
+          await db
+            .update(user)
+            .set({
+              role: ROLES.SUPERADMIN,
+            })
+            .where(eq(user.id, newUser.id));
+        }
+      }
+    }),
   },
 });
+
 function sendMail(arg0: { to: string; subject: string; text: string }) {
   throw new Error("Function not implemented.");
 }
+
+export type Auth = typeof auth;

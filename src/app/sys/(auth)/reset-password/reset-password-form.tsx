@@ -12,12 +12,13 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { passwordSchema } from "@/lib/zod-schema/validation";
-import { authClient } from "@/server/auth-client";
+import { authClient } from "@/lib/auth-utils/auth-client";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
+import { PATH } from "@/lib/path";
 
 const resetPasswordSchema = z.object({
   newPassword: passwordSchema,
@@ -53,7 +54,7 @@ export function ResetPasswordForm({ token }: ResetPasswordFormProps) {
       setError(error.message || "Something went wrong");
     } else {
       setSuccess("Password reset successfully. Redirecting to sign in...");
-      setTimeout(() => router.push("/sign-in"), 3000);
+      setTimeout(() => router.push(PATH.SIGNIN), 3000);
       form.reset();
     }
   }

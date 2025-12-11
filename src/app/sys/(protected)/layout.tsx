@@ -1,9 +1,15 @@
 import React from "react";
-import { getServerSession } from "@/server/session";
-import { PATH } from "@/lib/path";
-import { redirect } from "next/navigation";
+import { getServerSession } from "@/lib/auth-utils/session";
 import { Sidebar } from "../_components/sidebar";
-import { Session } from "@/server/auth-types";
+import { Session } from "@/lib/auth-utils/auth-types";
+import { redirect } from "next/navigation";
+import { PATH } from "@/lib/path";
+
+// we pass session data to children
+
+type ChildWithSession = React.ReactElement<{
+  session: Session | null;
+}>;
 
 export default async function SystemLayout({
   children,
@@ -11,15 +17,15 @@ export default async function SystemLayout({
   children: React.ReactNode;
 }) {
   const session = await getServerSession();
+
   const user = session?.user;
+  if (!user) redirect(PATH.SIGNIN);
 
   if (!React.isValidElement(children)) {
     throw new Error("SystemLayout expects session paramaeter");
   }
 
   const child = children as ChildWithSession;
-
-  // if (!user) redirect(PATH.SIGNIN);
 
   return (
     <main className="flex min-h-screen ">
@@ -31,7 +37,3 @@ export default async function SystemLayout({
     </main>
   );
 }
-
-type ChildWithSession = React.ReactElement<{
-  session: Session | null;
-}>;
