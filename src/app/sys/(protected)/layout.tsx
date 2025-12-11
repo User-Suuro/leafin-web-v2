@@ -2,6 +2,8 @@ import React from "react";
 import { getServerSession } from "@/lib/auth-utils/session";
 import { Sidebar } from "../_components/sidebar";
 import { Session } from "@/lib/auth-utils/auth-types";
+import { redirect } from "next/navigation";
+import { PATH } from "@/lib/path";
 
 // we pass session data to children
 
@@ -16,8 +18,8 @@ export default async function SystemLayout({
 }) {
   const session = await getServerSession();
 
-  // const user = session?.user;
-  // if (!user) redirect(PATH.SIGNIN);
+  const user = session?.user;
+  if (!user) redirect(PATH.SIGNIN);
 
   if (!React.isValidElement(children)) {
     throw new Error("SystemLayout expects session paramaeter");

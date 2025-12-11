@@ -6,6 +6,7 @@ const nextConfig: NextConfig = {
   experimental: {
     authInterrupts: true,
   },
+  devIndicators: false,
 };
 
 export default nextConfig;

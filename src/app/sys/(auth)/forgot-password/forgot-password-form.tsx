@@ -12,6 +12,7 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { authClient } from "@/lib/auth-utils/auth-client";
+import { PATH } from "@/lib/path";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
@@ -37,7 +38,7 @@ export function ForgotPasswordForm() {
     setError(null);
     const { error } = await authClient.requestPasswordReset({
       email,
-      redirectTo: "/reset-password",
+      redirectTo: PATH.RESETPASS,
     });
 
     if (error) {
@@ -85,7 +86,11 @@ export function ForgotPasswordForm() {
               </div>
             )}
 
-            <LoadingButton type="submit" className="w-full cursor-pointer" loading={loading}>
+            <LoadingButton
+              type="submit"
+              className="w-full cursor-pointer"
+              loading={loading}
+            >
               Send reset link
             </LoadingButton>
           </form>

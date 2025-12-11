@@ -18,7 +18,6 @@ import { authClient } from "@/lib/auth-utils/auth-client";
 import { toast } from "sonner";
 import { User } from "@/lib/auth-utils/auth-types";
 import { UserAvatar } from "./user-avatar";
-import { USER_ROLES } from "@/lib/db/schema/auth-schema";
 
 interface UserDropdownProps {
   user: User;
@@ -44,7 +43,7 @@ export function UserDropdown({ user }: UserDropdownProps) {
             <span>Settings</span>
           </Link>
         </DropdownMenuItem>
-        {user.role.includes(USER_ROLES.ADMIN) && <AdminItem />}
+
         <SignOutItem />
       </DropdownMenuContent>
     </DropdownMenu>

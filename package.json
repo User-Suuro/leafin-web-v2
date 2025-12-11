@@ -39,6 +39,7 @@
     "zod": "^4.1.13"
   },
   "devDependencies": {
+    "@better-auth/cli": "^1.4.6",
     "@tailwindcss/postcss": "^4",
     "@types/node": "^20",
     "@types/react": "^19",
