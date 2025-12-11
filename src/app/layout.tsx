@@ -1,8 +1,7 @@
+import "./globals.css";
 import type { Metadata } from "next";
-import logo from "@/assets/favicon.ico";
+import logo from "@/assets/branding/favicon.svg";
 import { Poppins } from "next/font/google";
-
-import "@/styles/globals.css";
 
 const bodyFont = Poppins({
   subsets: ["latin"],

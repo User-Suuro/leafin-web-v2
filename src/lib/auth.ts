@@ -1,9 +1,9 @@
 import { drizzleAdapter } from "better-auth/adapters/drizzle";
 import { betterAuth } from "better-auth";
 import { createAuthMiddleware, APIError } from "better-auth/api";
-import { db } from "./drizzle";
+import { db } from "./db/drizzle";
+import { user, session, verification, account } from "./db/schema/auth-schema";
 import { passwordSchema } from "@/lib/zod-schema/validation";
-import { user, session, verification, account } from "./schema/auth-schema";
 
 export const auth = betterAuth({
   database: drizzleAdapter(db, {

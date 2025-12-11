@@ -15,7 +15,7 @@ import {
   Contact,
   ArrowRight,
 } from "lucide-react";
-import icon from "@/assets/logo.png";
+import icon from "@/assets/branding/favicon.svg";
 import { Button } from "@/components/ui/button";
 import { PATH } from "@/lib/path";
 
@@ -55,8 +55,8 @@ export default function Navbar() {
                   className={`flex items-center gap-2 text-sm font-medium transition-colors ${
                     pathname === item.href ||
                     (item.href !== "/" && pathname.startsWith(item.href))
-                      ? "text-green-700"
-                      : "hover:text-green-600"
+                      ? "text-green-600"
+                      : "hover:text-muted-foreground"
                   }`}
                 >
                   {item.icon}
