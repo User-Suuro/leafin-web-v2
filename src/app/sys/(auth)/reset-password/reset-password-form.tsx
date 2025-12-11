@@ -11,7 +11,7 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
-import { passwordSchema } from "@/lib/validation";
+import { passwordSchema } from "@/lib/zod-schema/validation";
 import { authClient } from "@/server/auth-client";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouter } from "next/navigation";

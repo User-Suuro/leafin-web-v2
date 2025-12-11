@@ -6,6 +6,7 @@ export const PATH = {
 
   // SYSTEM
   SYSTEM: "/sys",
+  USERS: "/sys/users",
 
   // AUTH
   SIGNIN: "/sys/sign-in",

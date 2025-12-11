@@ -1,8 +1,5 @@
 import type { Metadata } from "next";
 import logo from "@/assets/favicon.ico";
-
-import { Cormorant_Garamond } from "next/font/google";
-import { Luckiest_Guy } from "next/font/google";
 import { Poppins } from "next/font/google";
 
 import "@/styles/globals.css";

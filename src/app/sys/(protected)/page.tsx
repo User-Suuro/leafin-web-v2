@@ -1,8 +1,14 @@
 "use client";
 
-export default function SystemDashboard() {
+import { Session } from "@/server/auth-types";
+
+export default function SystemDashboard({
+  session,
+}: {
+  session: Session | null;
+}) {
   return (
-    <div className="flex min-h-screen items-center justify-center">
+    <div className="">
       <p>system dashboard</p>
     </div>
   );

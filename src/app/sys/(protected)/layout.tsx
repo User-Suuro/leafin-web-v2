@@ -1,9 +1,11 @@
-import { PATH } from "@/lib/path";
+import React from "react";
 import { getServerSession } from "@/server/session";
-import "@/styles/globals.css";
+import { PATH } from "@/lib/path";
 import { redirect } from "next/navigation";
+import { Sidebar } from "../_components/sidebar";
+import { Session } from "@/server/auth-types";
 
-export default async function SystemContentLayout({
+export default async function SystemLayout({
   children,
 }: {
   children: React.ReactNode;
@@ -11,9 +13,25 @@ export default async function SystemContentLayout({
   const session = await getServerSession();
   const user = session?.user;
 
-  if (!user) {
-    redirect(PATH.SIGNIN);
+  if (!React.isValidElement(children)) {
+    throw new Error("SystemLayout expects session paramaeter");
   }
 
-  return children;
+  const child = children as ChildWithSession;
+
+  // if (!user) redirect(PATH.SIGNIN);
+
+  return (
+    <main className="flex min-h-screen ">
+      <div className="flex">
+        <Sidebar />
+      </div>
+
+      {React.cloneElement(child, { session })}
+    </main>
+  );
 }
+
+type ChildWithSession = React.ReactElement<{
+  session: Session | null;
+}>;
