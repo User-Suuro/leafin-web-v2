@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { Suspense } from "react";
 import { Button } from "@/components/ui/button";
 import { SignInForm } from "./sign-in-form";
 import { PATH } from "@/lib/path";
@@ -11,7 +12,9 @@ export default async function SignIn() {
   return (
     <main className="flex flex-col min-h-svh justify-center px-4">
       <div className="w-full max-w-md mx-auto flex flex-col gap-6 items-start">
-        <SignInForm />
+        <Suspense fallback={<div>Loading form...</div>}>
+          <SignInForm />
+        </Suspense>
 
         <Link href={PATH.HOME}>
           <Button className="w-fit cursor-pointer">
