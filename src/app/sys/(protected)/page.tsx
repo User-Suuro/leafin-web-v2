@@ -1,6 +1,6 @@
 "use client";
 
-import { Session } from "@/server/auth-types";
+import { Session } from "@/lib/auth-utils/auth-types";
 
 export default function SystemDashboard({
   session,
