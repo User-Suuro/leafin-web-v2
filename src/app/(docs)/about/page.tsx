@@ -1,7 +1,7 @@
 "use client";
 
 import Image from "next/image";
-import { motion, useViewportScroll, useTransform } from "framer-motion";
+import { motion, useScroll, useTransform } from "framer-motion";
 
 import SlideFade from "@/components/animations/SlideFade";
 import FadeIn from "@/components/animations/FadeIn";
@@ -9,8 +9,18 @@ import FadeIn from "@/components/animations/FadeIn";
 import Lettuce from "@/assets/about-img/Lettuce.png";
 import Tilapia from "@/assets/about-img/Tilapia.png";
 
+
+import { Leaf, Fish, MonitorCloud } from 'lucide-react';
+import System from "@/assets/about-img/system.png";
+import One from "@/assets/about-img/one.png";
+import Two from "@/assets/about-img/two.png";
+import Three from "@/assets/about-img/three.png";
+
+
+
+
 export default function About() {
-  const { scrollY } = useViewportScroll();
+  const { scrollY } = useScroll();
   const opacity = useTransform(scrollY, [0, 200], [1, 0]);
   const y = useTransform(scrollY, [0, 200], [0, -80]);
 
@@ -27,7 +37,7 @@ export default function About() {
           alt="Hero Background"
           fill
           priority
-          className="absolute top-0 left-0 w-full h-full object-cover z-[-1]"
+          className="absolute top-0 left-0 w-full h-full object-cover z-[-1] brightness-50"
         />
 
         {/* HERO TEXT */}
@@ -53,7 +63,7 @@ export default function About() {
 
 
       {/* LETTUCE */}
-      <div className="flex flex-row items-center justify-between max-w-6xl mx-auto gap-50 mb-75">
+      <div className="flex flex-row  items-center justify-between max-w-6xl mx-auto gap-50 mb-75">
         <SlideFade>
           <div className="flex justify-center w-[400px]">
             <Image
@@ -125,6 +135,77 @@ export default function About() {
           </div>
         </SlideFade>
       </div>
+
+      {/* INFO SECTION */}
+      <div className="flex flex-col w-full max-w-6xl mx-auto gap-12 mb-32">
+        {[
+          {
+            icon: "Leaf",
+            number: One,
+            text: `Tilapia (Oreochromis niloticus) is a fast-growing freshwater fish ideal
+            for aquaponics. It is hardy, easy to maintain, and thrives in varied water
+            conditions. In the system, tilapia will be kept in tanks with sensors for
+            pH, temperature, and oxygen, and fed using an automated feeder.`
+          },
+          {
+            icon: "Fish",
+            number: Two,
+            text: `Lettuce (Lactuca sativa) grows well in aquaponic setups due to its low
+            nutrient needs and quick growth. It will be planted in rafts or channels
+            where roots absorb nutrients from fish waste. Sensors will help maintain
+            water quality for optimal plant health.`
+          },
+          {
+            icon: "MonitorCloud",
+            number: Three,
+            text: `The Aquaponics System connects fish and plant production in a sustainable
+            cycle. Fish provide nutrients for the plants, while plants help filter
+            the water. With automated monitoring and feeding, the system ensures
+            balanced growth with less manual work.`
+          }
+        ].map((item, index) => (
+          <motion.div
+            key={index}
+            className="flex flex-row items-start gap-6"
+            initial={{ opacity: 0, y: 40 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, amount: 0.3 }}
+            transition={{ duration: 0.6, delay: index * 0.2 }}
+          >
+            {/* Icon */}
+            <div className="w-1/6 flex justify-center">
+              {item.icon === "Leaf" ? (
+                <Leaf className="w-20 h-20 text-green-700" />
+              ) : item.icon === "Fish" ? (
+                <Fish className="w-20 h-20 text-green-700" />
+              ) : item.icon === "MonitorCloud" ? (
+                <MonitorCloud className="w-20 h-20 text-green-700" />
+              ) : (
+                <Image
+                  src={item.icon}
+                  alt="Icon"
+                  className="object-contain"
+                  width={80}
+                  height={80}
+                />
+              )}
+            </div>
+
+            {/* Number + Text */}
+            <div className="flex flex-row items-start gap-4 w-5/6">
+              <Image
+                src={item.number}
+                alt="Number"
+                className="object-contain"
+                width={40}
+                height={40}
+              />
+              <p>{item.text}</p>
+            </div>
+          </motion.div>
+        ))}
+      </div>
+
     </main>
   );
 }
