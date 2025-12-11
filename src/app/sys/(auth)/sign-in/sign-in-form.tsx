@@ -126,7 +126,7 @@ export function SignInForm() {
                   </FormControl>
 
                   <Link
-                    href="/forgot-password"
+                    href={PATH.FORGOTPASS}
                     className="ml-auto inline-block text-sm underline"
                   >
                     Forgot your password?
@@ -168,16 +168,6 @@ export function SignInForm() {
           </form>
         </Form>
       </CardContent>
-      <CardFooter>
-        <div className="flex w-full justify-center border-t pt-4">
-          <p className="text-muted-foreground text-center text-xs">
-            Don&apos;t have an account?{" "}
-            <Link href="/sign-up" className="underline">
-              Sign up
-            </Link>
-          </p>
-        </div>
-      </CardFooter>
     </Card>
   );
 }

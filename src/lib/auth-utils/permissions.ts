@@ -1,6 +1,12 @@
 import { createAccessControl } from "better-auth/plugins/access";
 import { defaultStatements, adminAc } from "better-auth/plugins/admin/access";
 
+export const ROLES = {
+  SUPERADMIN: "SUPERADMIN",
+  ADMIN: "ADMIN",
+  UTILITY: "UTILITY",
+};
+
 export const statement = {
   ...defaultStatements,
   // Add other resource permissions here if needed

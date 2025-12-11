@@ -27,8 +27,6 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { USER_ROLES } from "@/lib/db/schema/auth-schema";
-
 const createAdminSchema = z
   .object({
     email: z.email({ message: "Please enter a valid email" }),
@@ -50,11 +48,7 @@ type CreateAdminValues = z.infer<typeof createAdminSchema>;
 export function CreateAdminForm() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-
   const router = useRouter();
-
-  const searchParams = useSearchParams();
-  const redirect = searchParams.get("redirect");
 
   const form = useForm<CreateAdminValues>({
     resolver: zodResolver(createAdminSchema),

@@ -22,6 +22,7 @@ interface DatagridViewProps<T> {
 
   // Toolbar props
   onSearch?: (query: string) => void;
+  onReload?: () => void;
   action?: React.ReactNode;
   additionalControls?: React.ReactNode;
 }
@@ -38,6 +39,7 @@ export function DatagridView<T>({
   onPageSizeChange,
   pageSizeOptions,
   onSearch,
+  onReload,
   action,
   additionalControls,
 }: DatagridViewProps<T>) {
@@ -48,6 +50,7 @@ export function DatagridView<T>({
     <div className="space-y-4">
       <DatagridToolbar
         onSearch={onSearch}
+        onReload={onReload}
         action={action}
         additionalControls={additionalControls}
       />

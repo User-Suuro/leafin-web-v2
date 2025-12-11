@@ -1,11 +1,18 @@
 "use client";
 
 import { authClient } from "@/lib/auth-utils/auth-client";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { DatagridColumn, DatagridView } from "@/components/dgv/datagrid-view";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
-import { Loader2 } from "lucide-react";
+import { BanIcon, Pencil, Trash2 } from "lucide-react";
+import { ROLES } from "@/lib/auth-utils/permissions";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 
 interface User {
   id: string;
@@ -23,13 +30,14 @@ export default function UsersPage() {
   const [users, setUsers] = useState<User[]>([]);
   const [totalItems, setTotalItems] = useState(0);
   const [loading, setLoading] = useState(false);
+  const { data: session } = authClient.useSession();
 
   // Pagination state
   const [currentPage, setCurrentPage] = useState(1);
   const [pageSize, setPageSize] = useState(10);
   const [searchQuery, setSearchQuery] = useState("");
 
-  const fetchUsers = async () => {
+  const fetchUsers = useCallback(async () => {
     setLoading(true);
     try {
       const response = await authClient.admin.listUsers({
@@ -43,9 +51,17 @@ export default function UsersPage() {
       });
 
       if (response.data) {
-        setUsers(response.data.users as unknown as User[]);
+        let fetchedUsers = response.data.users as unknown as User[];
 
-        setTotalItems(response.data.users.length);
+        if (session?.user?.role !== ROLES.SUPERADMIN) {
+          fetchedUsers = fetchedUsers.filter(
+            (user) => user.role !== ROLES.SUPERADMIN
+          );
+        }
+
+        setUsers(fetchedUsers);
+
+        setTotalItems(fetchedUsers.length);
       }
 
       if (response.error) {
@@ -60,11 +76,20 @@ export default function UsersPage() {
     } finally {
       setLoading(false);
     }
-  };
+  }, [currentPage, pageSize, searchQuery, session?.user?.role]);
 
   useEffect(() => {
     fetchUsers();
-  }, [currentPage, pageSize, searchQuery]);
+  }, [fetchUsers]);
+
+  const canBan = (targetUser: User) => {
+    if (!session?.user) return false;
+    // Cannot ban self
+    if (targetUser.id === session.user.id) return false;
+    // Cannot ban super admin
+    if (targetUser.role === ROLES.SUPERADMIN) return false;
+    return true;
+  };
 
   const columns: DatagridColumn<User>[] = [
     {
@@ -93,13 +118,38 @@ export default function UsersPage() {
     },
     {
       header: "Actions",
-      cell: (user) => (
-        <Button variant="ghost" size="sm">
-          Edit
-        </Button>
-      ),
+      cell: (user) => {
+        if (!canBan(user)) return null;
+        return (
+          <div className="flex items-center gap-2">
+            <TooltipProvider>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <Button variant="destructive" size="icon">
+                    <BanIcon className="h-4 w-4" />
+                  </Button>
+                </TooltipTrigger>
+                <TooltipContent>
+                  <p>Ban User</p>
+                </TooltipContent>
+              </Tooltip>
+            </TooltipProvider>
+          </div>
+        );
+      },
     },
   ];
+
+  // Filter out columns that should create empty cells if the entire column ends up empty for current view
+  // Specifically for Actions column
+  const filteredColumns = columns.filter((col) => {
+    if (col.header === "Actions") {
+      // Check if any user in the current page can be banned
+      const hasAnyActions = users.some((user) => canBan(user));
+      return hasAnyActions;
+    }
+    return true;
+  });
 
   return (
     <div className="container mx-auto py-10">
@@ -108,13 +158,14 @@ export default function UsersPage() {
       </h1>
       <DatagridView
         data={users}
-        columns={columns}
+        columns={filteredColumns}
         totalItems={totalItems}
         currentPage={currentPage}
         pageSize={pageSize}
         onPageChange={setCurrentPage}
         onPageSizeChange={setPageSize}
         onSearch={setSearchQuery}
+        onReload={fetchUsers}
         loading={loading}
         action={<Button>Create User</Button>}
       />

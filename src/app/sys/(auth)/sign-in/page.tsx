@@ -4,7 +4,8 @@ import { Button } from "@/components/ui/button";
 import { SignInForm } from "./sign-in-form";
 import { PATH } from "@/lib/path";
 import { ArrowLeft, Loader2 } from "lucide-react";
-import { USER_ROLES, user } from "@/lib/db/schema/auth-schema";
+import { user } from "@/lib/db/schema/auth-schema";
+import { ROLES } from "@/lib/auth-utils/permissions";
 import { eq } from "drizzle-orm";
 import { db } from "@/lib/db/drizzle";
 import { CreateAdminForm } from "./create-admin-form";
@@ -39,7 +40,7 @@ async function checkIfHasSuperAdmin() {
   const superAdmin = await db
     .select()
     .from(user)
-    .where(eq(user.role, USER_ROLES.SUPERADMIN));
+    .where(eq(user.role, ROLES.SUPERADMIN));
 
   if (superAdmin.length === 0) {
     return false;

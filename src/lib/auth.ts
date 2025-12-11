@@ -3,19 +3,14 @@ import { betterAuth } from "better-auth";
 import { createAuthMiddleware, APIError } from "better-auth/api";
 import { admin } from "better-auth/plugins";
 import { db } from "./db/drizzle";
-import {
-  user,
-  session,
-  verification,
-  account,
-  USER_ROLES,
-} from "./db/schema/auth-schema";
+import { user, session, verification, account } from "./db/schema/auth-schema";
 import {
   ac,
   admin as adminRole,
   user as userRole,
   superAdmin,
   utility,
+  ROLES,
 } from "./auth-utils/permissions";
 import { eq } from "drizzle-orm";
 import { passwordSchema } from "@/lib/zod-schema/validation";
@@ -30,9 +25,9 @@ export const auth = betterAuth({
     admin({
       ac,
       roles: {
-        [USER_ROLES.SUPERADMIN]: superAdmin,
-        [USER_ROLES.UTILITY]: utility,
-        [USER_ROLES.ADMIN]: adminRole,
+        [ROLES.SUPERADMIN]: superAdmin,
+        [ROLES.UTILITY]: utility,
+        [ROLES.ADMIN]: adminRole,
       },
     }),
   ],
@@ -82,7 +77,7 @@ export const auth = betterAuth({
           await db
             .update(user)
             .set({
-              role: USER_ROLES.SUPERADMIN,
+              role: ROLES.SUPERADMIN,
             })
             .where(eq(user.id, newUser.id));
         }
@@ -90,6 +85,7 @@ export const auth = betterAuth({
     }),
   },
 });
+
 function sendMail(arg0: { to: string; subject: string; text: string }) {
   throw new Error("Function not implemented.");
 }
