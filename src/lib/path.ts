@@ -8,6 +8,21 @@ export const PATH = {
   SYSTEM: "/sys",
   USERS: "/sys/users",
 
+  // BATCH
+  BATCH: "/sys/batch",
+
+  // MONITORING
+  MONITORING: "/sys/monitoring",
+
+  // TASKS
+  TASKS: "/sys/tasks",
+
+  // EXPENSES
+  EXPENSES: "/sys/expenses",
+
+  // SALES
+  SALES: "/sys/sales",
+
   // AUTH
   SIGNIN: "/sys/sign-in",
   FORGOTPASS: "/sys/forgot-password",
@@ -20,3 +35,4 @@ export const API_PATH = {
     SENSORS: "/api/arduino/sensors",
   },
 };
+

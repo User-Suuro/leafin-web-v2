@@ -1,14 +1,21 @@
 import "./globals.css";
 import type { Metadata } from "next";
 import logo from "@/assets/branding/favicon.svg";
-import { Poppins } from "next/font/google";
+import { Luckiest_Guy, Poppins } from "next/font/google";
 
 import { Toaster } from "@/components/ui/sonner";
+import { ToastProvider } from "@/components/ui/toast-provider";
 
 const bodyFont = Poppins({
   subsets: ["latin"],
   weight: ["400", "500"],
   variable: "--font-body",
+});
+
+const luckiestGuy = Luckiest_Guy({
+  subsets: ["latin"],
+  weight: "400", // only available weight
+  variable: "--font-luckiest",
 });
 
 export const metadata: Metadata = {
@@ -26,9 +33,14 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <body
-        className={`${bodyFont.variable} scrollbar-gutter-stable scroll-smooth`}
+        className={`
+          ${bodyFont.variable}
+          ${luckiestGuy.variable}
+          scrollbar-gutter-stable scroll-smooth
+          min-h-screen bg-[#faf7f2] text-gray-900
+        `}
       >
-        {children}
+        <ToastProvider>{children}</ToastProvider>
         <Toaster />
       </body>
     </html>
