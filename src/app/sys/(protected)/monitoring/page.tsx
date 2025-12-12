@@ -7,6 +7,7 @@ import { StageTimeline, TILAPIA_STAGES, LETTUCE_STAGES, } from "@/components/pag
 import FeederStatus from "@/components/pages/sys/monitoring/feeder-status";
 import { useMonitoring } from "../../../hooks/useMonitoring";
 import { SensorCard } from "@/components/pages/sys/monitoring/sensor-card";
+import { MotorControl } from "@/components/pages/sys/monitoring/motor-control";
 
 const DEFAULT_FISH_API = "/api/fish-batch/timeline";
 const DEFAULT_LETTUCE_API = "/api/plant-batch/timeline";
@@ -16,7 +17,7 @@ export default function Monitoring() {
 
   const tabs = useMemo(
     () => [{ id: "timeline", label: "Timeline" },
-    { id: "feeder", label: "Feeder" }, { id: "sensors", label: "Sensors" },],
+    { id: "feeder", label: "Feeder" }, { id: "sensors", label: "Sensors" }, { id: "control", label: "Control" },],
     []
   );
 
@@ -99,6 +100,10 @@ export default function Monitoring() {
                 />
               ))}
             </div>
+          </TabsContent>
+
+          <TabsContent value="control" className="space-y-6">
+            <MotorControl />
           </TabsContent>
         </Tabs>
       </div>
