@@ -8,13 +8,7 @@ import {
   NavigationMenuItem,
   NavigationMenuList,
 } from "@/components/ui/navigation-menu";
-import {
-  Home,
-  LayoutDashboard,
-  FileText,
-  Contact,
-  ArrowRight,
-} from "lucide-react";
+import { Home, LayoutDashboard, FileText, Contact, ArrowRight } from "lucide-react";
 import icon from "@/assets/branding/favicon.svg";
 import { Button } from "@/components/ui/button";
 import { PATH } from "@/lib/path";
@@ -38,7 +32,6 @@ export default function Navbar() {
             alt="Leafin Things Logo"
             height={40}
             className="h-10 w-auto object-contain"
-            priority
           />
           <span className="text-xl font-bold text-green-700">
             LeaFin Things
@@ -52,12 +45,11 @@ export default function Navbar() {
               <NavigationMenuItem key={item.href}>
                 <Link
                   href={item.href}
-                  className={`flex items-center gap-2 text-sm font-medium transition-colors ${
-                    pathname === item.href ||
+                  className={`flex items-center gap-2 text-sm font-medium transition-colors ${pathname === item.href ||
                     (item.href !== "/" && pathname.startsWith(item.href))
-                      ? "text-green-600"
-                      : "hover:text-muted-foreground"
-                  }`}
+                    ? "text-green-600"
+                    : "hover:text-muted-foreground"
+                    }`}
                 >
                   {item.icon}
                   {item.label}
