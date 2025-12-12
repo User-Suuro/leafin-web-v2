@@ -22,12 +22,12 @@ export type BatchType = "fish" | "plant";
 
 export type BatchUpdate<T extends BatchType> = T extends "fish"
   ? Partial<{
-      fishBatchId: number;
-      fishQuantity: number;
-      batchStatus: BatchStatus;
-    }>
+    fishBatchId: number;
+    fishQuantity: number;
+    batchStatus: BatchStatus;
+  }>
   : Partial<{
-      plantBatchId: number;
-      plantQuantity: number;
-      batchStatus: BatchStatus;
-    }>;
+    plantBatchId: number;
+    plantQuantity: number;
+    batchStatus: BatchStatus;
+  }>;

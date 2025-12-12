@@ -41,12 +41,33 @@ const sidebarItems = [
     icon: Fish,
     href: PATH.BATCH,
   },
-  /*
+
   {
     title: "Monitoring",
     icon: Activity,
-    href: PATH,
+    href: PATH.MONITORING,
   },
+
+  {
+    title: "Expenses",
+    icon: CreditCard,
+    href: PATH.EXPENSES,
+  },
+
+  {
+    title: "Tasks",
+    icon: ClipboardList,
+    href: PATH.TASKS,
+  },
+
+  {
+    title: "Sales",
+    icon: DollarSign,
+    href: PATH.SALES,
+  },
+
+  /*
+ 
   {
     title: "Batch",
     href: "/system/batch",

@@ -4,14 +4,7 @@ import { createAuthMiddleware, APIError } from "better-auth/api";
 import { admin } from "better-auth/plugins";
 import { db } from "./db/drizzle";
 import { user, session, verification, account } from "./db/schema/auth-schema";
-import {
-  ac,
-  admin as adminRole,
-  user as userRole,
-  superAdmin,
-  utility,
-  ROLES,
-} from "./auth-utils/permissions";
+import { ac, admin as adminRole, user as userRole, superAdmin, utility, ROLES, } from "./auth-utils/permissions";
 import { eq } from "drizzle-orm";
 import { passwordSchema } from "@/lib/zod-schema/validation";
 

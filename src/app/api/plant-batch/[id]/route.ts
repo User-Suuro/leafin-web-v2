@@ -5,9 +5,8 @@ import { eq } from "drizzle-orm";
 
 export async function GET(req: Request) {
   try {
-    // Extract batchId from URL
     const url = new URL(req.url);
-    const idParam = url.pathname.split("/").pop(); // get last segment
+    const idParam = url.pathname.split("/").pop();
     const batchId = Number(idParam);
 
     if (isNaN(batchId)) {

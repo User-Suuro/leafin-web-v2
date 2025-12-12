@@ -11,6 +11,17 @@ export const PATH = {
   // BATCH
   BATCH: "/sys/batch",
 
+  // MONITORING
+  MONITORING: "/sys/monitoring",
+
+  // TASKS
+  TASKS: "/sys/tasks",
+
+  // EXPENSES
+  EXPENSES: "/sys/expenses",
+
+  // SALES
+  SALES: "/sys/sales",
 
   // AUTH
   SIGNIN: "/sys/sign-in",
@@ -24,3 +35,4 @@ export const API_PATH = {
     SENSORS: "/api/arduino/sensors",
   },
 };
+
