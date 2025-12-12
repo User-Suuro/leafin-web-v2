@@ -89,7 +89,7 @@ export default function TaskManagement() {
   };
 
   return (
-    <div className="flex min-h-screen">
+    <div className="relative min-h-screen min-w-screen">
       <div className="flex-1 p-6">
         <h1 className="text-3xl font-bold mb-2">Task Management</h1>
         <Separator className="mb-6" />

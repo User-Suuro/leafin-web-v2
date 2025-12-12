@@ -18,7 +18,7 @@ export default function SalesROI() {
   } satisfies ChartConfig;
 
   return (
-    <div className="flex min-h-screen">
+    <div className="flex min-h-screen min-w-screen">
       <div className="flex-1 p-6">
         <h1 className="text-3xl font-bold tracking-tight mb-1">Sales & ROI</h1>
         <Separator className="mb-6" />
