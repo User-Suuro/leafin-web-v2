@@ -76,7 +76,7 @@ export default function MyExpensesPage() {
   };
 
   return (
-    <div className="flex flex-col p-5 space-y-6 min-h-screen min-w-screen">
+    <div className="flex flex-col p-5 space-y-6 min-h-screen min-w-screen pr-30">
       <header>
         <h1 className="text-2xl font-bold">My Expenses</h1>
         <Separator className="mt-1" />

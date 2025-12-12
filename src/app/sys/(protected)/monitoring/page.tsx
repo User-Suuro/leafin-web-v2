@@ -22,7 +22,7 @@ export default function Monitoring() {
   );
 
   return (
-    <div className="flex min-h-screen min-w-screen">
+    <div className="flex min-h-screen min-w-screen pr-30">
       <div className="flex-1 p-6">
         <div className="mb-6">
           <h1 className="text-3xl font-bold tracking-tight">Monitoring</h1>

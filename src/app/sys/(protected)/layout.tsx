@@ -28,7 +28,7 @@ export default async function SystemLayout({
   const child = children as ChildWithSession;
 
   return (
-    <main className="flex min-h-screen ">
+    <main className="flex min-h-screen min-w-screen overflow-hidden pr-8">
       <div className="flex">
         <Sidebar />
       </div>
