@@ -22,6 +22,20 @@
       "when": 1765451182459,
       "tag": "0002_yielding_taskmaster",
       "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "5",
+      "when": 1765536271460,
+      "tag": "0003_violet_night_thrasher",
+      "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "5",
+      "when": 1765538214437,
+      "tag": "0004_bright_amphibian",
+      "breakpoints": true
     }
   ]
 }

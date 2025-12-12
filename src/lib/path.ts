@@ -8,6 +8,10 @@ export const PATH = {
   SYSTEM: "/sys",
   USERS: "/sys/users",
 
+  // BATCH
+  BATCH: "/sys/batch",
+
+
   // AUTH
   SIGNIN: "/sys/sign-in",
   FORGOTPASS: "/sys/forgot-password",

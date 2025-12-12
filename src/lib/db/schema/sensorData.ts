@@ -1,10 +1,4 @@
-import {
-  mysqlTable,
-  varchar,
-  int,
-  boolean,
-  timestamp,
-} from "drizzle-orm/mysql-core";
+import { mysqlTable, varchar, int, boolean, timestamp } from "drizzle-orm/mysql-core";
 
 export const sensorData = mysqlTable("sensor_data", {
   id: int("id").primaryKey().autoincrement(),
