@@ -4,6 +4,7 @@ import logo from "@/assets/branding/favicon.svg";
 import { Poppins } from "next/font/google";
 
 import { Toaster } from "@/components/ui/sonner";
+import { ToastProvider } from "@/components/ui/toast-provider";
 
 const bodyFont = Poppins({
   subsets: ["latin"],
@@ -28,7 +29,7 @@ export default function RootLayout({
       <body
         className={`${bodyFont.variable} scrollbar-gutter-stable scroll-smooth`}
       >
-        {children}
+        <ToastProvider>{children}</ToastProvider>
         <Toaster />
       </body>
     </html>

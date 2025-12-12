@@ -35,6 +35,12 @@ const sidebarItems = [
     icon: Users2Icon,
     href: PATH.USERS,
   },
+
+  {
+    title: "Batch",
+    icon: Fish,
+    href: PATH.BATCH,
+  },
   /*
   {
     title: "Monitoring",
