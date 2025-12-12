@@ -36,6 +36,13 @@
       "when": 1765538214437,
       "tag": "0004_bright_amphibian",
       "breakpoints": true
+    },
+    {
+      "idx": 5,
+      "version": "5",
+      "when": 1765574847927,
+      "tag": "0005_known_barracuda",
+      "breakpoints": true
     }
   ]
 }

@@ -5,8 +5,9 @@ import { Tabs, TabsContent, TabsList, TabsTrigger, } from "@/components/ui/tabs"
 import { Separator } from "@/components/ui/separator";
 import { StageTimeline, TILAPIA_STAGES, LETTUCE_STAGES, } from "@/components/pages/sys/monitoring/stage-timeline";
 import FeederStatus from "@/components/pages/sys/monitoring/feeder-status";
-import WaterQuality from "@/components/pages/sys/monitoring/water-quality";
 import { useMonitoring } from "../../../hooks/useMonitoring";
+import { SensorCard } from "@/components/pages/sys/monitoring/sensor-card";
+import { MotorControl } from "@/components/pages/sys/monitoring/motor-control";
 
 const DEFAULT_FISH_API = "/api/fish-batch/timeline";
 const DEFAULT_LETTUCE_API = "/api/plant-batch/timeline";
@@ -15,13 +16,13 @@ export default function Monitoring() {
   const { tilapiaBatches, lettuceBatches, loadingTilapia, loadingLettuce, timelineError, } = useMonitoring();
 
   const tabs = useMemo(
-    () => [{ id: "timeline", label: "Timeline" }, { id: "water-quality", label: "Water Quality" },
-    { id: "feeder", label: "Feeder" }, { id: "sensors", label: "Sensors" },],
+    () => [{ id: "timeline", label: "Timeline" },
+    { id: "feeder", label: "Feeder" }, { id: "sensors", label: "Sensors" }, { id: "control", label: "Control" },],
     []
   );
 
   return (
-    <div className="flex min-h-screen">
+    <div className="flex min-h-screen min-w-screen pr-30">
       <div className="flex-1 p-6">
         <div className="mb-6">
           <h1 className="text-3xl font-bold tracking-tight">Monitoring</h1>
@@ -79,20 +80,30 @@ export default function Monitoring() {
             </div>
           </TabsContent>
 
-          <TabsContent value="water-quality" className="space-y-6">
-            <WaterQuality />
-          </TabsContent>
 
           <TabsContent value="feeder" className="space-y-6">
             <FeederStatus />
           </TabsContent>
 
           <TabsContent value="sensors" className="space-y-6">
-            <div>
-              <h2 className="text-2xl font-semibold mb-4">System Sensors</h2>
-              <div className="mb-4 font-medium">Device Status: </div>
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4"></div>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+              {[
+                { name: "Water Temp", value: "24.5°C" },
+                { name: "pH Level", value: "7.2" },
+                { name: "Dissolved Oxygen", value: "6.5 mg/L" },
+                { name: "Ammonia", value: "0.0 ppm" },
+              ].map((sensor) => (
+                <SensorCard
+                  key={sensor.name}
+                  name={sensor.name}
+                  value={sensor.value}
+                />
+              ))}
             </div>
+          </TabsContent>
+
+          <TabsContent value="control" className="space-y-6">
+            <MotorControl />
           </TabsContent>
         </Tabs>
       </div>

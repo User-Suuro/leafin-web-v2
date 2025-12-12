@@ -60,7 +60,7 @@ export default function SystemDashboard({
 
 
   return (
-    <div className="flex min-h-screen">
+    <div className="relative min-h-screen min-w-screen pr-30">
       <div className="flex-1 p-5 overflow-y-auto space-y-6">
         <header>
           <h1 className="text-2xl font-bold">Growth Overview</h1>
