@@ -3,7 +3,7 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 
-interface SensorCardProps {
+export interface SensorCardProps {
   name: string;
   value: string | number;
   icon?: React.ReactNode;
