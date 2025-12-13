@@ -1,8 +1,12 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
+import Link from "next/link";
 import Image from "next/image";
 import Landing from "@/assets/landing.png";
+import  ScaleFade  from "@/components/animations/ScaleFade";
+import FadeIn from "@/components/animations/FadeIn";
+import { ScanEye } from "lucide-react";
 
 export default function Home() {
   return (
@@ -10,24 +14,34 @@ export default function Home() {
       
       {/* TEXT SECTION */}
       <div className="flex flex-col items-start justify-start">
-        <h1 className="text-4xl font-bold mb-4 text-green-800">
-          LeaFin Things
-        </h1>
-
+        <FadeIn delay={0.2}>
+          <h1 className="text-5xl font-bold mb-4 text-green-800">
+            LeaFin Things
+          </h1>
+        </FadeIn>
+        
+        <FadeIn delay={0.3}>
         <p className="text-lg text-gray-600 max-w-md">
           An innovative and sustainable Aquaponics System
         </p>
-
+        </FadeIn>
         <Button
           variant="default"
-          className="mt-6"
-          href="./about"
+          className="mt-6 cursor-pointer"
+
         >
-          Explore
+          <Link
+            href="./about"
+            className="flex items-center gap-2"
+          >
+             Explore
+          </Link>
+         
         </Button>
       </div>
 
       {/* IMAGE SECTION */}
+      <ScaleFade>
       <div className="rounded-2xl shadow-xl overflow-hidden border border-gray-200  ">
         <Image
           src={Landing}
@@ -38,6 +52,8 @@ export default function Home() {
           priority
         />
       </div>
+      </ScaleFade>
+
 
     </main>
   );
