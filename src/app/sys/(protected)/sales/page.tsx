@@ -8,13 +8,15 @@ import { CartesianGrid, Line, LineChart, XAxis } from "recharts";
 import { ChartConfig, ChartContainer, ChartTooltip, ChartTooltipContent } from "@/components/ui/chart";
 import { useSalesData } from "../../../hooks/useSalesData";
 
+import { BATCH_COLORS } from "@/lib/utils";
+
 export default function SalesROI() {
   const { summary, transactions, chartData, loading, error } = useSalesData();
 
   const chartConfig = {
-    fish_sales: { label: "Fish Sales", color: "var(--chart-1)" },
-    plant_sales: { label: "Plant Sales", color: "var(--chart-2)" },
-    expenses: { label: "Expenses", color: "var(--chart-3)" },
+    fish_sales: { label: "Fish Sales", color: BATCH_COLORS[8] }, // Blue
+    plant_sales: { label: "Plant Sales", color: BATCH_COLORS[4] }, // Green
+    expenses: { label: "Expenses", color: BATCH_COLORS[0] }, // Red
   } satisfies ChartConfig;
 
   return (

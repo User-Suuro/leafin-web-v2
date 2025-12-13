@@ -17,7 +17,7 @@ import { FishBatch, PlantBatch } from "@/components/pages/sys/batch/types/batchT
 export default function BatchPage() {
     const { fishBatches, plantBatches, setFishBatches, setPlantBatches, loading } = useBatches();
 
-    const { handleEdit, openHarvestModal, harvestModalOpen, setHarvestModalOpen, harvestBatchId, selectedType, setSelectedType
+    const { handleEdit, handleHarvest, handleDelete, openHarvestModal, harvestModalOpen, setHarvestModalOpen, harvestBatchId, selectedType, setSelectedType
     } = useBatchActions(fishBatches, plantBatches, setFishBatches, setPlantBatches);
 
     const [modalOpen, setModalOpen] = useState(false);
@@ -91,7 +91,8 @@ export default function BatchPage() {
                                     "Delete Batch",
                                     "Are you sure you want to delete this fish batch?",
                                     () => {
-                                        console.log("Deleting batch", batchId);
+                                        handleDelete(batchId, "fish");
+                                        setConfirmOpen(false);
                                     },
                                     "destructive"
                                 );
@@ -120,7 +121,8 @@ export default function BatchPage() {
                                     "Delete Plant Batch",
                                     "Are you sure you want to delete this plant batch?",
                                     () => {
-                                        console.log("Deleting plant batch", batchId);
+                                        handleDelete(batchId, "plant");
+                                        setConfirmOpen(false);
                                     },
                                     "destructive"
                                 );
@@ -159,7 +161,7 @@ export default function BatchPage() {
                             onClose={() => setHarvestModalOpen(false)}
                             type={selectedType}
                             batchId={harvestBatchId}
-                            onSubmit={() => { }}
+                            onSubmit={handleHarvest}
                         />
                     )}
 

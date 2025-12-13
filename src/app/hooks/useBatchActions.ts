@@ -40,6 +40,75 @@ export function useBatchActions(
     }
   };
 
+  // Harvest a batch
+  const handleHarvest = async (data: {
+    customerName: string;
+    totalAmount: number;
+    notes: string;
+  }) => {
+    if (!harvestBatchId || !selectedType) return;
+
+    try {
+      const res = await fetch("/api/batches/harvest", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          type: selectedType,
+          batchId: harvestBatchId,
+          ...data,
+        }),
+      });
+
+      const json = await res.json();
+      if (!res.ok) throw new Error(json.error || "Failed to harvest");
+
+      // Update local state to remove harvested batch
+      if (selectedType === "fish") {
+        setFishBatches((prev) =>
+          prev.filter((b) => b.fishBatchId !== harvestBatchId)
+        );
+      } else {
+        setPlantBatches((prev) =>
+          prev.filter((b) => b.plantBatchId !== harvestBatchId)
+        );
+      }
+
+      setHarvestModalOpen(false);
+      setHarvestBatchId(null);
+    } catch (err) {
+      console.error(err);
+      alert("Failed to harvest batch");
+    }
+  };
+
+  // Delete a batch
+  const handleDelete = async (batchId: number, type: BatchType) => {
+    try {
+      const res = await fetch("/api/batches/delete", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ type, batchId }),
+      });
+
+      const json = await res.json();
+      if (!res.ok) throw new Error(json.error || "Failed to delete");
+
+      // Update local state
+      if (type === "fish") {
+        setFishBatches((prev) =>
+          prev.filter((b) => b.fishBatchId !== batchId)
+        );
+      } else {
+        setPlantBatches((prev) =>
+          prev.filter((b) => b.plantBatchId !== batchId)
+        );
+      }
+    } catch (err) {
+      console.error(err);
+      alert("Failed to delete batch");
+    }
+  };
+
   const openHarvestModal = (batchId: number, type: BatchType) => {
     setHarvestBatchId(batchId);
     setSelectedType(type);
@@ -48,6 +117,8 @@ export function useBatchActions(
 
   return {
     handleEdit,
+    handleHarvest,
+    handleDelete,
     openHarvestModal,
     harvestModalOpen,
     setHarvestModalOpen,
