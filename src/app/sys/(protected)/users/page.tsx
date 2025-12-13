@@ -13,6 +13,7 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
+import AddUserModal from "@/components/pages/sys/modal/AddUserModal";
 
 interface User {
   id: string;
@@ -36,6 +37,7 @@ export default function UsersPage() {
   const [currentPage, setCurrentPage] = useState(1);
   const [pageSize, setPageSize] = useState(10);
   const [searchQuery, setSearchQuery] = useState("");
+  const [isAddUserModalOpen, setIsAddUserModalOpen] = useState(false);
 
   const fetchUsers = useCallback(async () => {
     setLoading(true);
@@ -167,7 +169,17 @@ export default function UsersPage() {
         onSearch={setSearchQuery}
         onReload={fetchUsers}
         loading={loading}
-        action={<Button>Create User</Button>}
+        action={
+          <Button onClick={() => setIsAddUserModalOpen(true)}>
+            Create User
+          </Button>
+        }
+      />
+
+      <AddUserModal
+        open={isAddUserModalOpen}
+        onClose={() => setIsAddUserModalOpen(false)}
+        onSuccess={fetchUsers}
       />
     </div>
   );
