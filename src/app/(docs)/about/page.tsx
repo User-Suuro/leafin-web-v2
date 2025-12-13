@@ -33,6 +33,7 @@ export default function About() {
       >
         {/* BACKGROUND IMAGE */}
         <Image
+          // eslint-disable-next-line @typescript-eslint/no-require-imports
           src={require('@/assets/about-img/hero-background-img.jpg')}
           alt="Hero Background"
           fill
