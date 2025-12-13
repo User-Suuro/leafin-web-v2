@@ -5,6 +5,7 @@ import { plantBatch } from "@/lib/db/schema/plantBatch";
 import { fishSales } from "@/lib/db/schema/fishSales";
 import { plantSales } from "@/lib/db/schema/plantSales";
 import { eq } from "drizzle-orm";
+import { logActivity } from "@/lib/logUtils";
 
 export async function POST(req: Request) {
   try {
@@ -50,20 +51,32 @@ export async function POST(req: Request) {
     const amountStr = totalAmount.toFixed(2); // convert number to string with 2 decimals
 
     if (type === "fish") {
-      await db.insert(fishSales).values({
+      const result = await db.insert(fishSales).values({
         fishBatchId: batchId,
         saleDate: today,
         totalSaleAmount: amountStr, // <-- string
         customerName,
         notes: notes || "",
       });
+
+      await logActivity({
+        notes: `Harvested Fish Batch #${batchId}: Sold to ${customerName} for ${amountStr}. ${notes || ""}`,
+        relatedFishSaleId: Number(result[0].insertId),
+        fishBatchId: batchId,
+      });
     } else {
-      await db.insert(plantSales).values({
+      const result = await db.insert(plantSales).values({
         plantBatchId: batchId,
         saleDate: today,
         totalSaleAmount: amountStr, // <-- string
         customerName,
         notes: notes || "",
+      });
+
+      await logActivity({
+        notes: `Harvested Plant Batch #${batchId}: Sold to ${customerName} for ${amountStr}. ${notes || ""}`,
+        relatedPlantSaleId: Number(result[0].insertId),
+        plantBatchId: batchId,
       });
     }
 

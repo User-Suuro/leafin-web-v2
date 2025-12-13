@@ -3,6 +3,7 @@ import { NextResponse } from "next/server";
 import { db } from "@/lib/db/drizzle";
 import { plantBatch } from "@/lib/db/schema/plantBatch";
 import { eq } from "drizzle-orm";
+import { logActivity } from "@/lib/logUtils";
 
 export async function GET() {
   try {
@@ -70,12 +71,17 @@ export async function POST(req: Request) {
     const expectedHarvestDate = new Date(now);
     expectedHarvestDate.setDate(expectedHarvestDate.getDate() + 50);
 
-    await db.insert(plantBatch).values({
+    const result = await db.insert(plantBatch).values({
       plantQuantity,
       dateAdded: now,
       condition,
       expectedHarvestDate,
       batchStatus: "growing", // initial batch status
+    });
+
+    await logActivity({
+      notes: `Added Plant Batch with ${plantQuantity} plants.`,
+      plantBatchId: Number(result[0].insertId),
     });
 
     return NextResponse.json({ success: true });
