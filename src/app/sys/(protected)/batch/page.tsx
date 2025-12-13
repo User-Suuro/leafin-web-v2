@@ -17,17 +17,20 @@ import { FishBatch, PlantBatch } from "@/components/pages/sys/batch/types/batchT
 export default function BatchPage() {
     const { fishBatches, plantBatches, setFishBatches, setPlantBatches, loading } = useBatches();
 
-    const { handleEdit, handleHarvest, handleDelete, openHarvestModal, harvestModalOpen, setHarvestModalOpen, harvestBatchId, selectedType, setSelectedType
+    const { handleEdit, handleHarvest, handleDelete, handleDiscard, openHarvestModal, harvestModalOpen, setHarvestModalOpen, harvestBatchId, selectedType, setSelectedType
     } = useBatchActions(fishBatches, plantBatches, setFishBatches, setPlantBatches);
 
     const [modalOpen, setModalOpen] = useState(false);
     const [editModalOpen, setEditModalOpen] = useState(false);
     const [editingBatch, setEditingBatch] = useState<FishBatch | PlantBatch | null>(null);
+
+    // Confirmation Modal State
     const [confirmOpen, setConfirmOpen] = useState(false);
-    const [confirmAction, setConfirmAction] = useState<null | (() => void)>(null);
     const [confirmTitle, setConfirmTitle] = useState("");
     const [confirmDescription, setConfirmDescription] = useState("");
+    const [confirmAction, setConfirmAction] = useState<() => void>(() => { });
     const [confirmVariant, setConfirmVariant] = useState<"default" | "destructive">("default");
+
 
     const openConfirm = (
         title: string,
@@ -40,6 +43,54 @@ export default function BatchPage() {
         setConfirmAction(() => onConfirm);
         setConfirmVariant(variant);
         setConfirmOpen(true);
+    };
+
+    const handleBatchAction = (action: string, batchId: number, type: "fish" | "plant") => {
+        if (action === "harvest") {
+            openHarvestModal(batchId, type);
+        }
+
+        if (action === "edit") {
+            if (type === "fish") {
+                const batch = fishBatches.find(b => b.fishBatchId === batchId);
+                if (batch) {
+                    setEditingBatch(batch);
+                    setSelectedType("fish");
+                    setEditModalOpen(true);
+                }
+            } else {
+                const batch = plantBatches.find(b => b.plantBatchId === batchId);
+                if (batch) {
+                    setEditingBatch(batch);
+                    setSelectedType("plant");
+                    setEditModalOpen(true);
+                }
+            }
+        }
+
+        if (action === "delete") {
+            openConfirm(
+                "Delete Batch",
+                "Are you sure you want to delete this batch? This action cannot be undone.",
+                () => {
+                    handleDelete(batchId, type);
+                    setConfirmOpen(false);
+                },
+                "destructive"
+            );
+        }
+
+        if (action === "discard") {
+            openConfirm(
+                "Discard Batch",
+                "Are you sure you want to discard this batch? Status will be set to 'Discarded'.",
+                () => {
+                    handleDiscard(batchId, type);
+                    setConfirmOpen(false);
+                },
+                "destructive"
+            );
+        }
     };
 
     return (
@@ -76,58 +127,14 @@ export default function BatchPage() {
                     <BatchTable
                         data={fishBatches}
                         type="fish"
-                        onAction={(action, batchId) => {
-                            if (action === "harvest") openHarvestModal(batchId, "fish");
-                            if (action === "edit") {
-                                const batch = fishBatches.find((b) => b.fishBatchId === batchId);
-                                if (batch) {
-                                    setEditingBatch(batch);
-                                    setSelectedType("fish");
-                                    setEditModalOpen(true);
-                                }
-                            }
-                            if (action === "delete") {
-                                openConfirm(
-                                    "Delete Batch",
-                                    "Are you sure you want to delete this fish batch?",
-                                    () => {
-                                        handleDelete(batchId, "fish");
-                                        setConfirmOpen(false);
-                                    },
-                                    "destructive"
-                                );
-                            }
-                        }}
+                        onAction={(action, batchId) => handleBatchAction(action, batchId, "fish")}
                     />
 
                     {/* PLANT BATCH TABLE */}
                     <BatchTable
                         data={plantBatches}
                         type="plant"
-                        onAction={(action, batchId) => {
-                            if (action === "harvest") openHarvestModal(batchId, "plant");
-
-                            if (action === "edit") {
-                                const batch = plantBatches.find((b) => b.plantBatchId === batchId);
-                                if (batch) {
-                                    setEditingBatch(batch);
-                                    setSelectedType("plant");
-                                    setEditModalOpen(true);
-                                }
-                            }
-
-                            if (action === "delete") {
-                                openConfirm(
-                                    "Delete Plant Batch",
-                                    "Are you sure you want to delete this plant batch?",
-                                    () => {
-                                        handleDelete(batchId, "plant");
-                                        setConfirmOpen(false);
-                                    },
-                                    "destructive"
-                                );
-                            }
-                        }}
+                        onAction={(action, batchId) => handleBatchAction(action, batchId, "plant")}
                     />
 
                     {/* EDIT BATCH MODAL */}

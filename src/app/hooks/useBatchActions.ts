@@ -109,6 +109,38 @@ export function useBatchActions(
     }
   };
 
+  // Discard a batch
+  const handleDiscard = async (batchId: number, type: BatchType) => {
+    try {
+      const res = await fetch("/api/batches/discard", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ type, batchId }),
+      });
+
+      const json = await res.json();
+      if (!res.ok) throw new Error(json.error || "Failed to discard");
+
+      // Update local state
+      if (type === "fish") {
+        setFishBatches((prev) =>
+          prev.map((b) =>
+            b.fishBatchId === batchId ? { ...b, batchStatus: "discarded" } : b
+          )
+        );
+      } else {
+        setPlantBatches((prev) =>
+          prev.map((b) =>
+            b.plantBatchId === batchId ? { ...b, batchStatus: "discarded" } : b
+          )
+        );
+      }
+    } catch (err) {
+      console.error(err);
+      alert("Failed to discard batch");
+    }
+  };
+
   const openHarvestModal = (batchId: number, type: BatchType) => {
     setHarvestBatchId(batchId);
     setSelectedType(type);
@@ -119,6 +151,7 @@ export function useBatchActions(
     handleEdit,
     handleHarvest,
     handleDelete,
+    handleDiscard,
     openHarvestModal,
     harvestModalOpen,
     setHarvestModalOpen,
