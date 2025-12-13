@@ -1,7 +1,9 @@
 import { NextResponse } from "next/server";
 import { db } from "@/lib/db/drizzle"; // your drizzle db connection
 import { tasks } from "@/lib/db/schema/tasks";
-import { logActivity } from "@/lib/logUtils";
+import { logAction } from "@/lib/logger";
+import { auth } from "@/lib/auth";
+import { headers } from "next/headers";
 
 // GET all tasks
 export async function GET() {
@@ -20,15 +22,26 @@ export async function GET() {
 // POST a new task
 export async function POST(req: Request) {
   try {
+    const session = await auth.api.getSession({
+      headers: await headers(),
+    });
+
     const body = await req.json();
     const result = await db.insert(tasks).values(body);
 
-    await logActivity({
-      notes: `Created Task: ${body.title} (${body.taskType})`,
-      taskId: Number(result[0].insertId),
-      fishBatchId: body.relatedFishBatchId || undefined,
-      plantBatchId: body.relatedPlantBatchId || undefined,
-    });
+    if (session?.user?.id) {
+      await logAction(
+        session.user.id,
+        "CREATE",
+        "TASK",
+        {
+          ...body,
+          taskId: Number(result[0].insertId),
+        },
+        String(result[0].insertId),
+        `Created Task: ${body.title} (${body.taskType})`
+      );
+    }
 
     return NextResponse.json(
       { message: "Task added successfully" },
