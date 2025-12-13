@@ -3,6 +3,7 @@ import { db } from "@/lib/db/drizzle";
 import { fishBatch } from "@/lib/db/schema/fishBatch";
 import { plantBatch } from "@/lib/db/schema/plantBatch";
 import { eq } from "drizzle-orm";
+import { logActivity } from "@/lib/logUtils";
 
 export async function POST(req: Request) {
   try {
@@ -52,6 +53,12 @@ export async function POST(req: Request) {
       .update(table)
       .set({ batchStatus: "discarded" })
       .where(eq(idColumn, batchId));
+
+    await logActivity({
+      notes: `Discarded ${type === "fish" ? "Fish" : "Plant"} Batch #${batchId}.`,
+      fishBatchId: type === "fish" ? Number(batchId) : undefined,
+      plantBatchId: type === "plant" ? Number(batchId) : undefined,
+    });
 
     // Return the updated batch (optional)
     const [updatedBatch] = await db
