@@ -34,7 +34,7 @@ export async function GET() {
       .select()
       .from(sensorData)
       .orderBy(desc(sensorData.created_at))
-      .limit(1);
+      .limit(5);
 
     if (rows.length === 0) {
       return NextResponse.json({
@@ -48,6 +48,7 @@ export async function GET() {
         float_switch: false,
         nh3_gas: "",
         created_at: null,
+        history: [],
       });
     }
 
@@ -68,12 +69,14 @@ export async function GET() {
         float_switch: false,
         nh3_gas: "",
         created_at: lastSensorData.created_at,
+        history: rows,
       });
     }
 
     return NextResponse.json({
       connected: true,
       ...lastSensorData, // includes created_at directly
+      history: rows,
     });
   } catch (err) {
     console.error("GET /api/send-sensor-data failed:", err);

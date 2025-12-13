@@ -6,7 +6,7 @@ import { Separator } from "@/components/ui/separator";
 import { StageTimeline, TILAPIA_STAGES, LETTUCE_STAGES, } from "@/components/pages/sys/monitoring/stage-timeline";
 import FeederStatus from "@/components/pages/sys/monitoring/feeder-status";
 import { useMonitoring } from "../../../hooks/useMonitoring";
-import { SensorCard } from "@/components/pages/sys/monitoring/sensor-card";
+import { SensorsSection } from "@/components/pages/sys/monitoring/sensors-section";
 import { MotorControl } from "@/components/pages/sys/monitoring/motor-control";
 
 const DEFAULT_FISH_API = "/api/fish-batch/timeline";
@@ -86,20 +86,7 @@ export default function Monitoring() {
           </TabsContent>
 
           <TabsContent value="sensors" className="space-y-6">
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-              {[
-                { name: "Water Temp", value: "24.5°C" },
-                { name: "pH Level", value: "7.2" },
-                { name: "Dissolved Oxygen", value: "6.5 mg/L" },
-                { name: "Ammonia", value: "0.0 ppm" },
-              ].map((sensor) => (
-                <SensorCard
-                  key={sensor.name}
-                  name={sensor.name}
-                  value={sensor.value}
-                />
-              ))}
-            </div>
+            <SensorsSection />
           </TabsContent>
 
           <TabsContent value="control" className="space-y-6">

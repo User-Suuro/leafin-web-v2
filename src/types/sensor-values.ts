@@ -8,5 +8,6 @@ export interface SensorData {
   tds: number;
   float_switch: boolean;
   nh3_gas: number;
-  created_at: number; 
+  created_at: number;
+  history?: SensorData[];
 }
