@@ -2,26 +2,12 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import {
-  LayoutDashboard,
-  Activity,
-  ClipboardList,
-  DollarSign,
-  BarChart3,
-  Settings,
-  CreditCard,
-  History,
-  Fish,
-  Users2Icon,
-} from "lucide-react";
+import { LayoutDashboard, Activity, ClipboardList, DollarSign, BarChart3, Settings, CreditCard, History, Fish, Users2Icon, LogOut, } from "lucide-react";
+import { useRouter } from "next/navigation";
+import { authClient } from "@/lib/auth-utils/auth-client";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from "@/components/ui/tooltip";
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger, } from "@/components/ui/tooltip";
 import { PATH } from "@/lib/path";
 
 const sidebarItems = [
@@ -85,6 +71,17 @@ const sidebarItems = [
 
 export function Sidebar() {
   const pathname = usePathname();
+  const router = useRouter();
+
+  const handleSignOut = async () => {
+    await authClient.signOut({
+      fetchOptions: {
+        onSuccess: () => {
+          router.push("/");
+        },
+      },
+    });
+  };
 
   return (
     <TooltipProvider>
@@ -125,6 +122,26 @@ export function Sidebar() {
             );
           })}
         </nav>
+
+        {/* Sign Out Button */}
+        <div className="flex flex-col items-center gap-4 px-2 py-4">
+          <Tooltip delayDuration={0}>
+            <TooltipTrigger asChild>
+              <Button
+                variant="ghost"
+                size="icon"
+                className="h-9 w-9 text-red-500 hover:bg-red-50 hover:text-red-600"
+                onClick={handleSignOut}
+              >
+                <LogOut className="h-4 w-4" />
+                <span className="sr-only">Sign Out</span>
+              </Button>
+            </TooltipTrigger>
+            <TooltipContent side="right" className="flex items-center gap-4">
+              Sign Out
+            </TooltipContent>
+          </Tooltip>
+        </div>
       </div>
     </TooltipProvider>
   );
