@@ -1,35 +1,19 @@
-import { useEffect, useState } from "react";
+import useSWR from "swr";
 import { FishBatch, PlantBatch } from "@/components/pages/sys/batch/types/batchTypes";
 
+const fetcher = (url: string) => fetch(url).then((res) => res.json());
+
 export function useBatches() {
-  const [fishBatches, setFishBatches] = useState<FishBatch[]>([]);
-  const [plantBatches, setPlantBatches] = useState<PlantBatch[]>([]);
-  const [loading, setLoading] = useState(true);
-
-  const fetchBatches = async () => {
-    try {
-      const res = await fetch("/api/batches");
-      if (!res.ok) throw new Error("Failed to fetch batches");
-      const data = await res.json();
-
-      setFishBatches(data.fish || []);
-      setPlantBatches(data.plant || []);
-    } catch (err) {
-      console.error(err);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  useEffect(() => {
-    fetchBatches();
-  }, []);
+  const { data, error, isLoading, mutate } = useSWR("/api/batches", fetcher, {
+    refreshInterval: 5000, // Poll every 5 seconds
+    revalidateOnFocus: true,
+  });
 
   return {
-    fishBatches,
-    plantBatches,
-    setFishBatches,
-    setPlantBatches,
-    loading,
+    fishBatches: (data?.fish as FishBatch[]) || [],
+    plantBatches: (data?.plant as PlantBatch[]) || [],
+    loading: isLoading,
+    isError: error,
+    mutate,
   };
 }

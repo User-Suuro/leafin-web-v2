@@ -1,12 +1,7 @@
 import { useState } from "react";
-import { BatchType, BatchUpdate, FishBatch, PlantBatch } from "@/components/pages/sys/batch/types/batchTypes";
+import { BatchType, BatchUpdate } from "@/components/pages/sys/batch/types/batchTypes";
 
-export function useBatchActions(
-  fishBatches: FishBatch[],
-  plantBatches: PlantBatch[],
-  setFishBatches: React.Dispatch<React.SetStateAction<FishBatch[]>>,
-  setPlantBatches: React.Dispatch<React.SetStateAction<PlantBatch[]>>
-) {
+export function useBatchActions(mutate: () => Promise<any>) {
   const [harvestModalOpen, setHarvestModalOpen] = useState(false);
   const [harvestBatchId, setHarvestBatchId] = useState<number | null>(null);
   const [selectedType, setSelectedType] = useState<BatchType | "">("");
@@ -26,15 +21,7 @@ export function useBatchActions(
       const data = await res.json();
       if (!res.ok) throw new Error(data.error || "Failed to edit batch");
 
-      if (type === "fish") {
-        setFishBatches((prev) =>
-          prev.map((b) => (b.fishBatchId === batchId ? { ...b, ...updates } : b))
-        );
-      } else {
-        setPlantBatches((prev) =>
-          prev.map((b) => (b.plantBatchId === batchId ? { ...b, ...updates } : b))
-        );
-      }
+      await mutate();
     } catch (err) {
       console.error(err);
     }
@@ -62,16 +49,7 @@ export function useBatchActions(
       const json = await res.json();
       if (!res.ok) throw new Error(json.error || "Failed to harvest");
 
-      // Update local state to remove harvested batch
-      if (selectedType === "fish") {
-        setFishBatches((prev) =>
-          prev.filter((b) => b.fishBatchId !== harvestBatchId)
-        );
-      } else {
-        setPlantBatches((prev) =>
-          prev.filter((b) => b.plantBatchId !== harvestBatchId)
-        );
-      }
+      await mutate();
 
       setHarvestModalOpen(false);
       setHarvestBatchId(null);
@@ -93,16 +71,7 @@ export function useBatchActions(
       const json = await res.json();
       if (!res.ok) throw new Error(json.error || "Failed to delete");
 
-      // Update local state
-      if (type === "fish") {
-        setFishBatches((prev) =>
-          prev.filter((b) => b.fishBatchId !== batchId)
-        );
-      } else {
-        setPlantBatches((prev) =>
-          prev.filter((b) => b.plantBatchId !== batchId)
-        );
-      }
+      await mutate();
     } catch (err) {
       console.error(err);
       alert("Failed to delete batch");
@@ -121,20 +90,7 @@ export function useBatchActions(
       const json = await res.json();
       if (!res.ok) throw new Error(json.error || "Failed to discard");
 
-      // Update local state
-      if (type === "fish") {
-        setFishBatches((prev) =>
-          prev.map((b) =>
-            b.fishBatchId === batchId ? { ...b, batchStatus: "discarded" } : b
-          )
-        );
-      } else {
-        setPlantBatches((prev) =>
-          prev.map((b) =>
-            b.plantBatchId === batchId ? { ...b, batchStatus: "discarded" } : b
-          )
-        );
-      }
+      await mutate();
     } catch (err) {
       console.error(err);
       alert("Failed to discard batch");
