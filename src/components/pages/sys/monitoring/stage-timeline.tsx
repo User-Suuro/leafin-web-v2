@@ -4,6 +4,7 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle, } from "@/components/ui/card";
 import { Droplets, HeartPulse, ArrowLeft, ArrowRight } from "lucide-react";
+import { getColorForId } from "@/lib/utils";
 
 interface NormalizedBatch {
   id?: number | string;
@@ -150,12 +151,6 @@ export function StageTimeline({ title, stageDef, apiUrl, typeKey, batchesProp, }
         .toUpperCase(),
     [month]
   );
-
-  const colorMap: Record<string, string> = {
-    tilapia: "#60A5FA",
-    lettuce: "#34D399",
-    default: "#9CA3AF",
-  };
 
   const loadForMonth = useCallback(
     async (currentMonth: Date) => {
@@ -340,7 +335,8 @@ export function StageTimeline({ title, stageDef, apiUrl, typeKey, batchesProp, }
                   .map((b) => {
                     const left = leftPercent(b.startDay);
                     const width = widthPercent(b.startDay, b.endDay);
-                    const bg = colorMap[typeKey] ?? colorMap.default;
+                    // Use dynamic color based on ID
+                    const bg = getColorForId(b.id);
                     return (
                       <div
                         key={String(b.id) + "-" + b.label}
