@@ -1,6 +1,7 @@
 "use client";
 
 import Image from "next/image";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { motion, useScroll, useTransform } from "framer-motion";
 
 import SlideFade from "@/components/animations/SlideFade";
@@ -11,13 +12,9 @@ import Tilapia from "@/assets/about-img/Tilapia.png";
 
 
 import { Leaf, Fish, MonitorCloud } from 'lucide-react';
-import System from "@/assets/about-img/system.png";
 import One from "@/assets/about-img/one.png";
 import Two from "@/assets/about-img/two.png";
 import Three from "@/assets/about-img/three.png";
-
-
-
 
 export default function About() {
   const { scrollY } = useScroll();
@@ -57,7 +54,7 @@ export default function About() {
           transition={{ duration: 1, ease: "easeOut", delay: 0.3 }}
           className="mt-6 text-xl md:text-2xl text-white text-center max-w-2xl px-4"
         >
-          Learn about our aquaponics system and blahblah.
+          Learn about our aquaponics system.
         </motion.p>
       </motion.div>
 

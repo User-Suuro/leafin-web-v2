@@ -15,10 +15,10 @@ import { useBatchActions } from "../../../hooks/useBatchActions";
 import { FishBatch, PlantBatch } from "@/components/pages/sys/batch/types/batchTypes";
 
 export default function BatchPage() {
-    const { fishBatches, plantBatches, setFishBatches, setPlantBatches, loading } = useBatches();
+    const { fishBatches, plantBatches, loading, mutate } = useBatches();
 
     const { handleEdit, handleHarvest, handleDelete, handleDiscard, openHarvestModal, harvestModalOpen, setHarvestModalOpen, harvestBatchId, selectedType, setSelectedType
-    } = useBatchActions(fishBatches, plantBatches, setFishBatches, setPlantBatches);
+    } = useBatchActions(mutate);
 
     const [modalOpen, setModalOpen] = useState(false);
     const [editModalOpen, setEditModalOpen] = useState(false);
@@ -173,7 +173,12 @@ export default function BatchPage() {
                     )}
 
                     {/* ADD BATCH MODAL */}
-                    <AddBatchModal open={modalOpen} onClose={() => setModalOpen(false)} type={selectedType} />
+                    <AddBatchModal
+                        open={modalOpen}
+                        onClose={() => setModalOpen(false)}
+                        type={selectedType}
+                        onSuccess={() => mutate()}
+                    />
 
                     {/* CONFIRM MODAL */}
                     <ConfirmModal
