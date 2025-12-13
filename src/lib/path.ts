@@ -26,6 +26,9 @@ export const PATH = {
   // REPORTS
   REPORTS: "/sys/reports",
 
+  // LOGS
+  LOGS: "/sys/logs",
+
   // AUTH
   SIGNIN: "/sys/sign-in",
   FORGOTPASS: "/sys/forgot-password",
