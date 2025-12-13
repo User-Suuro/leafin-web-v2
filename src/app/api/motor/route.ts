@@ -9,7 +9,6 @@ export async function GET() {
         const result = await db.select().from(motor).limit(1);
 
         if (result.length === 0) {
-            // Initialize if empty, assuming ID 1
             await db.insert(motor).values({
                 id: 1,
                 main_pump: false,

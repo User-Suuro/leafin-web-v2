@@ -23,6 +23,9 @@ export const PATH = {
   // SALES
   SALES: "/sys/sales",
 
+  // REPORTS
+  REPORTS: "/sys/reports",
+
   // AUTH
   SIGNIN: "/sys/sign-in",
   FORGOTPASS: "/sys/forgot-password",
