@@ -7,6 +7,7 @@ import { plantSales } from "@/lib/db/schema/plantSales";
 import { expenses } from "@/lib/db/schema/expenses";
 import { fishBatch } from "@/lib/db/schema/fishBatch";
 import { plantBatch } from "@/lib/db/schema/plantBatch";
+import { user } from "@/lib/db/schema/auth-schema";
 import { sql, eq } from "drizzle-orm";
 
 export async function GET() {
@@ -16,6 +17,13 @@ export async function GET() {
         logId: logs.logId,
         eventTime: logs.eventTime,
         notes: logs.notes,
+
+        // Audit Fields
+        userId: logs.userId,
+        userName: user.name,
+        action: logs.action,
+        resourceType: logs.resourceType,
+        details: logs.details,
 
         // ✅ check which relation exists
         taskId: logs.taskId,
@@ -30,6 +38,7 @@ export async function GET() {
         expenseAmount: expenses.amount,
       })
       .from(logs)
+      .leftJoin(user, eq(logs.userId, user.id))
       .leftJoin(tasks, eq(logs.taskId, tasks.taskId))
       .leftJoin(fishSales, eq(logs.relatedFishSaleId, fishSales.fishSaleId))
       .leftJoin(plantSales, eq(logs.relatedPlantSaleId, plantSales.plantSaleId))
@@ -40,10 +49,11 @@ export async function GET() {
 
     // ✅ Normalize logs into a `type`
     const formatted = result.map((row) => {
-      let type: "task" | "fish_sale" | "plant_sale" | "expense" | "sensor" =
+      let type: "task" | "fish_sale" | "plant_sale" | "expense" | "sensor" | "audit" =
         "task";
 
-      if (row.fishSaleId) type = "fish_sale";
+      if (row.action) type = "audit";
+      else if (row.fishSaleId) type = "fish_sale";
       else if (row.plantSaleId) type = "plant_sale";
       else if (row.expenseId) type = "expense";
       else if (!row.taskId) type = "sensor"; // fallback
@@ -53,6 +63,12 @@ export async function GET() {
         event_time: row.eventTime,
         notes: row.notes ?? row.taskTitle ?? "", // use notes or fallback to task title
         type,
+
+        // Audit info
+        user_name: row.userName || "System",
+        action: row.action,
+        resource_type: row.resourceType,
+        details: row.details
       };
     });
 

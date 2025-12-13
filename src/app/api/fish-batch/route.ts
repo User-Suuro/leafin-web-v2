@@ -3,7 +3,9 @@ import { NextResponse } from "next/server";
 import { db } from "@/lib/db/drizzle";
 import { fishBatch } from "@/lib/db/schema/fishBatch";
 import { eq } from "drizzle-orm";
-import { logActivity } from "@/lib/logUtils";
+import { logAction } from "@/lib/logger"; // Updated import
+import { auth } from "@/lib/auth"; // Added import
+import { headers } from "next/headers"; // Added import
 
 export async function GET() {
   try {
@@ -71,6 +73,14 @@ export async function GET() {
 
 export async function POST(req: Request) {
   try {
+    const session = await auth.api.getSession({
+      headers: await headers(),
+    });
+
+    if (!session) {
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    }
+
     const data = await req.json();
     const { fishQuantity } = data;
 
@@ -91,10 +101,16 @@ export async function POST(req: Request) {
       batchStatus: "growing", // initial batch status
     });
 
-    await logActivity({
-      notes: `Added Fish Batch with ${fishQuantity} fish.`,
-      fishBatchId: Number(result[0].insertId),
-    });
+    const newBatchId = Number(result[0].insertId);
+
+    await logAction(
+      session.user.id,
+      "CREATE",
+      "BATCH",
+      { type: "fish", quantity: fishQuantity, batchId: newBatchId },
+      String(newBatchId),
+      `Added Fish Batch with ${fishQuantity} fish.`
+    );
 
     return NextResponse.json({ success: true });
   } catch (error) {

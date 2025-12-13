@@ -3,6 +3,9 @@ import { db } from "@/lib/db/drizzle";
 import { fishBatch } from "@/lib/db/schema/fishBatch";
 import { plantBatch } from "@/lib/db/schema/plantBatch";
 import { eq } from "drizzle-orm";
+import { logAction } from "@/lib/logger"; // Added import
+import { auth } from "@/lib/auth"; // Added import
+import { headers } from "next/headers"; // Added import
 
 type FishBatchUpdate = Partial<{
   fishQuantity: number;
@@ -16,6 +19,14 @@ type PlantBatchUpdate = Partial<{
 
 export async function POST(req: Request) {
   try {
+    const session = await auth.api.getSession({
+      headers: await headers(),
+    });
+
+    if (!session) {
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    }
+
     const body = (await req.json()) as {
       type: "fish" | "plant";
       batchId: number;
@@ -40,6 +51,15 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: "Batch not found" }, { status: 404 });
 
     await db.update(table).set(updates).where(eq(idColumn, batchId));
+
+    await logAction(
+      session.user.id,
+      "UPDATE",
+      "BATCH",
+      { type, batchId, updates },
+      String(batchId),
+      `Updated ${type} batch #${batchId}`
+    );
 
     return NextResponse.json({ success: true });
   } catch (error) {

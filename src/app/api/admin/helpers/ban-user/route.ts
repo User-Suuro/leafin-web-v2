@@ -19,46 +19,39 @@ export const POST = async (req: Request) => {
         }
 
         const body = await req.json();
-        const { name, email, password, role } = body;
+        const { userId } = body;
 
-        if (!name || !email || !password) {
+        if (!userId) {
             return NextResponse.json({ error: "Missing required fields" }, { status: 400 });
         }
 
-        // Use core auth to create user. 
-        // Note: signUpEmail usually signs the user in, checking headers. 
-        // server-side call:
-        const result = await auth.api.signUpEmail({
-            body: {
-                name,
-                email,
-                password,
-            },
-            asResponse: false // Get object back, don't trigger response logic yet
-        });
-
-        if (!result?.user) {
-            return NextResponse.json({ error: "Failed to create user" }, { status: 500 });
+        // Check if user exists
+        const targetUser = await db.select().from(user).where(eq(user.id, userId)).execute();
+        if (targetUser.length === 0) {
+            return NextResponse.json({ error: "User not found" }, { status: 404 });
         }
 
-        // Update role if it's different from default (which is likely user or undefined)
-        // AND if the requested role is valid.
-        if (role === ROLES.SUPERADMIN || role === ROLES.ADMIN || role === ROLES.UTILITY) {
-            await db.update(user).set({ role }).where(eq(user.id, result.user.id));
+        const targetUserData = targetUser[0];
+
+        // Cannot ban superadmin (extra safety)
+        if (targetUserData.role === ROLES.SUPERADMIN) {
+            return NextResponse.json({ error: "Cannot ban Super Admin" }, { status: 403 });
         }
+
+        await db.update(user).set({ banned: true }).where(eq(user.id, userId));
 
         await logAction(
             session.user.id,
-            "CREATE",
+            "UPDATE",
             "USER",
-            { name, email, role: role || "user" },
-            result.user.id,
-            `Created user ${email}`
+            { targetUserId: userId, targetUserEmail: targetUserData.email },
+            userId,
+            `Banned user ${targetUserData.email}`
         );
 
         return NextResponse.json({
             success: true,
-            user: { ...result.user, role }
+            message: "User banned successfully"
         });
 
     } catch (error: any) {

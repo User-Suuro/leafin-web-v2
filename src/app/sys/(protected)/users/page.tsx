@@ -39,6 +39,48 @@ export default function UsersPage() {
   const [searchQuery, setSearchQuery] = useState("");
   const [isAddUserModalOpen, setIsAddUserModalOpen] = useState(false);
 
+  const handleDelete = async (userId: string) => {
+    try {
+      const response = await fetch("/api/admin/helpers/delete-user", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ userId }),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.error || "Failed to delete user");
+      }
+
+      toast.success("User deleted successfully");
+      fetchUsers();
+    } catch (error: any) {
+      toast.error(error.message);
+    }
+  };
+
+  const handleBan = async (userId: string) => {
+    try {
+      const response = await fetch("/api/admin/helpers/ban-user", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ userId }),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.error || "Failed to ban user");
+      }
+
+      toast.success("User banned successfully");
+      fetchUsers();
+    } catch (error: any) {
+      toast.error(error.message);
+    }
+  };
+
   const fetchUsers = useCallback(async () => {
     setLoading(true);
     try {
@@ -54,6 +96,10 @@ export default function UsersPage() {
 
       if (response.data) {
         let fetchedUsers = response.data.users as unknown as User[];
+
+
+
+        console.log("Fetched users:", fetchedUsers);
 
         if (session?.user?.role !== ROLES.SUPERADMIN) {
           fetchedUsers = fetchedUsers.filter(
@@ -114,6 +160,20 @@ export default function UsersPage() {
       cell: (user) => (user.emailVerified ? "Yes" : "No"),
     },
     {
+      header: "Status",
+      accessorKey: "banned",
+      cell: (user) => (
+        <span
+          className={`px-2 py-1 rounded text-xs font-semibold ${user.banned
+            ? "bg-red-100 text-red-700"
+            : "bg-green-100 text-green-700"
+            }`}
+        >
+          {user.banned ? "Banned" : "Active"}
+        </span>
+      ),
+    },
+    {
       header: "Joined",
       accessorKey: "createdAt",
       cell: (user) => new Date(user.createdAt).toLocaleDateString(),
@@ -127,7 +187,36 @@ export default function UsersPage() {
             <TooltipProvider>
               <Tooltip>
                 <TooltipTrigger asChild>
-                  <Button variant="destructive" size="icon">
+                  <Button
+                    variant="destructive"
+                    size="icon"
+                    onClick={() => {
+                      if (confirm(`Are you sure you want to delete ${user.email}?`)) {
+                        handleDelete(user.id);
+                      }
+                    }}
+                  >
+                    <Trash2 className="h-4 w-4" />
+                  </Button>
+                </TooltipTrigger>
+                <TooltipContent>
+                  <p>Delete User</p>
+                </TooltipContent>
+              </Tooltip>
+
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <Button
+                    variant="secondary"
+                    size="icon"
+                    className="text-orange-600 hover:text-orange-700 hover:bg-orange-100"
+                    onClick={() => {
+                      // Simple confirmation for now, or could be a modal
+                      if (confirm(`Are you sure you want to ban ${user.email}?`)) {
+                        handleBan(user.id);
+                      }
+                    }}
+                  >
                     <BanIcon className="h-4 w-4" />
                   </Button>
                 </TooltipTrigger>
