@@ -15,10 +15,12 @@ export default function AddBatchModal({
   open,
   onClose,
   type,
+  onSuccess,
 }: {
   open: boolean;
   onClose: () => void;
   type: string;
+  onSuccess?: () => void;
 }) {
   const [quantity, setQuantity] = useState("");
   const { toast } = useToast();
@@ -43,6 +45,7 @@ export default function AddBatchModal({
           } batch added successfully.`,
       });
 
+      onSuccess?.(); // Trigger refresh
       setQuantity("");
       onClose();
     } catch (err) {
