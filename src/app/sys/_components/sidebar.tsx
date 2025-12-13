@@ -58,15 +58,11 @@ const sidebarItems = [
     href: PATH.REPORTS,
   },
 
-  /*
- 
-
   {
     title: "Logs",
     icon: History,
-    href: "/system/logs",
+    href: PATH.LOGS,
   },
-  */
 ];
 
 export function Sidebar() {
