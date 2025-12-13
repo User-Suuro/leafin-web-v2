@@ -77,6 +77,13 @@ export default function ExpensesReportModal({
     });
 
     doc.save(`Expenses_Report_${period}.pdf`);
+
+    // Log the action
+    fetch("/api/reports/log", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ reportType: "Expenses", period }),
+    }).catch(console.error);
   };
 
   return (

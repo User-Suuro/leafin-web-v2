@@ -1,5 +1,5 @@
 export type ActionType = "CREATE" | "UPDATE" | "DELETE" | "LOGIN" | "LOGOUT" | "OTHER";
-export type ResourceType = "USER" | "BATCH" | "EXPENSE" | "TASK" | "SALES" | "SENSOR" | "AUTH";
+export type ResourceType = "USER" | "BATCH" | "EXPENSE" | "TASK" | "SALES" | "SENSOR" | "AUTH" | "REPORT";
 
 import { db } from "@/lib/db/drizzle";
 import { logs } from "@/lib/db/schema/logs";

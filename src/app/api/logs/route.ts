@@ -54,6 +54,8 @@ export async function GET() {
 
       if (row.resourceType === "EXPENSE") type = "expense";
       else if (row.resourceType === "TASK") type = "task";
+      else if (row.resourceType === "SALES") type = "fish_sale";
+      else if (row.resourceType === "REPORT") type = "audit"; // Display reports as audit logs
       else if (row.action) type = "audit";
       else if (row.fishSaleId) type = "fish_sale";
       else if (row.plantSaleId) type = "plant_sale";

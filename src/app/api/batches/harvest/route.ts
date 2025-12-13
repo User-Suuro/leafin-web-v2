@@ -5,10 +5,15 @@ import { plantBatch } from "@/lib/db/schema/plantBatch";
 import { fishSales } from "@/lib/db/schema/fishSales";
 import { plantSales } from "@/lib/db/schema/plantSales";
 import { eq } from "drizzle-orm";
-import { logActivity } from "@/lib/logUtils";
+import { logAction } from "@/lib/logger";
+import { auth } from "@/lib/auth";
+import { headers } from "next/headers";
 
 export async function POST(req: Request) {
   try {
+    const session = await auth.api.getSession({
+      headers: await headers(),
+    });
     const body = (await req.json()) as {
       type: "fish" | "plant";
       batchId: number;
@@ -59,11 +64,23 @@ export async function POST(req: Request) {
         notes: notes || "",
       });
 
-      await logActivity({
-        notes: `Harvested Fish Batch #${batchId}: Sold to ${customerName} for ${amountStr}. ${notes || ""}`,
-        relatedFishSaleId: Number(result[0].insertId),
-        fishBatchId: batchId,
-      });
+      if (session?.user?.id) {
+        await logAction(
+          session.user.id,
+          "CREATE",
+          "SALES",
+          {
+            batchId,
+            type: "fish",
+            customerName,
+            totalAmount: amountStr,
+            notes,
+            fishSaleId: Number(result[0].insertId),
+          },
+          String(result[0].insertId),
+          `Harvested Fish Batch #${batchId}: Sold to ${customerName} for ${amountStr}`
+        );
+      }
     } else {
       const result = await db.insert(plantSales).values({
         plantBatchId: batchId,
@@ -73,11 +90,23 @@ export async function POST(req: Request) {
         notes: notes || "",
       });
 
-      await logActivity({
-        notes: `Harvested Plant Batch #${batchId}: Sold to ${customerName} for ${amountStr}. ${notes || ""}`,
-        relatedPlantSaleId: Number(result[0].insertId),
-        plantBatchId: batchId,
-      });
+      if (session?.user?.id) {
+        await logAction(
+          session.user.id,
+          "CREATE",
+          "SALES",
+          {
+            batchId,
+            type: "plant",
+            customerName,
+            totalAmount: amountStr,
+            notes,
+            plantSaleId: Number(result[0].insertId),
+          },
+          String(result[0].insertId),
+          `Harvested Plant Batch #${batchId}: Sold to ${customerName} for ${amountStr}`
+        );
+      }
     }
 
     return NextResponse.json({ success: true });

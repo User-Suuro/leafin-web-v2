@@ -82,6 +82,13 @@ export default function ProductSalesSummaryModal({
     });
 
     doc.save(`Product_Sales_Summary_${period}.pdf`);
+
+    // Log the action
+    fetch("/api/reports/log", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ reportType: "Product Sales Summary", period }),
+    }).catch(console.error);
   };
 
   return (
