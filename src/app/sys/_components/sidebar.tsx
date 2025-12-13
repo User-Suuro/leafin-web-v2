@@ -2,13 +2,31 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { LayoutDashboard, Activity, ClipboardList, DollarSign, BarChart3, Settings, CreditCard, History, Fish, Users2Icon, LogOut, } from "lucide-react";
+import {
+  LayoutDashboard,
+  Activity,
+  ClipboardList,
+  DollarSign,
+  BarChart3,
+  CreditCard,
+  History,
+  Fish,
+  Users2Icon,
+  LogOut,
+} from "lucide-react";
 import { useRouter } from "next/navigation";
 import { authClient } from "@/lib/auth-utils/auth-client";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger, } from "@/components/ui/tooltip";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 import { PATH } from "@/lib/path";
+import { ROLES } from "@/lib/auth-utils/permissions";
+import { Session } from "@/lib/auth-utils/auth-types";
 
 const sidebarItems = [
   {
@@ -20,52 +38,49 @@ const sidebarItems = [
     title: "Users",
     icon: Users2Icon,
     href: PATH.USERS,
+    roles: [ROLES.ADMIN, ROLES.SUPERADMIN],
   },
-
   {
     title: "Batch",
     icon: Fish,
     href: PATH.BATCH,
   },
-
   {
     title: "Monitoring",
     icon: Activity,
     href: PATH.MONITORING,
   },
-
   {
     title: "Expenses",
     icon: CreditCard,
     href: PATH.EXPENSES,
   },
-
   {
     title: "Tasks",
     icon: ClipboardList,
     href: PATH.TASKS,
   },
-
   {
     title: "Sales",
     icon: DollarSign,
     href: PATH.SALES,
+    roles: [ROLES.ADMIN, ROLES.SUPERADMIN],
   },
-
   {
     title: "Reports",
     icon: BarChart3,
     href: PATH.REPORTS,
+    roles: [ROLES.ADMIN, ROLES.SUPERADMIN],
   },
-
   {
     title: "Logs",
     icon: History,
     href: PATH.LOGS,
+    roles: [ROLES.ADMIN, ROLES.SUPERADMIN],
   },
 ];
 
-export function Sidebar() {
+export function Sidebar({ session }: { session: Session | null }) {
   const pathname = usePathname();
   const router = useRouter();
 
@@ -79,12 +94,18 @@ export function Sidebar() {
     });
   };
 
+  const filteredItems = sidebarItems.filter((item) => {
+    if (!item.roles) return true;
+    if (!session?.user) return false;
+    return item.roles.includes(session.user.role as any);
+  });
+
   return (
     <TooltipProvider>
       <div className="flex h-full w-16 flex-col border-r bg-background">
         {/* Navigation */}
         <nav className="flex flex-1 flex-col items-center gap-4 px-2 py-4">
-          {sidebarItems.map((item) => {
+          {filteredItems.map((item) => {
             const isActive = pathname === item.href;
             const Icon = item.icon;
 

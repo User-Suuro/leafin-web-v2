@@ -6,3 +6,5 @@ import { auth } from "../auth";
 export const authClient = createAuthClient({
   plugins: [inferAdditionalFields<typeof auth>(), adminClient(), nextCookies()],
 });
+
+export const { useSession, signIn, signOut, signUp } = authClient;

@@ -30,7 +30,7 @@ export default async function SystemLayout({
   return (
     <main className="flex min-h-screen min-w-screen overflow-hidden pr-8">
       <div className="flex">
-        <Sidebar />
+        <Sidebar session={session} />
       </div>
 
       {React.cloneElement(child, { session })}
