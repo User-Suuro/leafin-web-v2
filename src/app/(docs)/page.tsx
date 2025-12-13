@@ -25,10 +25,11 @@ export default function Home() {
           An innovative and sustainable Aquaponics System
         </p>
         </FadeIn>
+
+        <FadeIn delay={0.3}>
         <Button
           variant="default"
           className="mt-6 cursor-pointer"
-
         >
           <Link
             href="./about"
@@ -38,16 +39,17 @@ export default function Home() {
           </Link>
          
         </Button>
+        </FadeIn>
+
       </div>
 
       {/* IMAGE SECTION */}
       <ScaleFade>
-      <div className="rounded-2xl shadow-xl overflow-hidden border border-gray-200  ">
+      <div className="relative w-[430px] h-[530px] rounded-2xl shadow-xl overflow-hidden border border-gray-200">
         <Image
           src={Landing}
           alt="Landing Image"
-          width={500}
-          height={300}
+          fill
           className="object-cover"
           priority
         />

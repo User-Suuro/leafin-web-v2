@@ -1,4 +1,5 @@
 import Navbar from "./_components/navbar";
+import Footer from "./_components/footer";
 
 export default function DocsLayout({
   children,
@@ -9,6 +10,7 @@ export default function DocsLayout({
     <main>
       <Navbar />
       {children}
+      <Footer />
     </main>
   );
 }
