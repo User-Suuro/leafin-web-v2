@@ -66,33 +66,15 @@ const sidebarItems = [
     href: PATH.SALES,
   },
 
-  /*
- 
-  {
-    title: "Batch",
-    href: "/system/batch",
-    icon: Fish,
-  },
-  {
-    title: "Tasks",
-    icon: ClipboardList,
-    href: "/system/tasks",
-  },
-  {
-    title: "Expenses",
-    icon: CreditCard,
-    href: "/system/expenses",
-  },
-  {
-    title: "Sales",
-    icon: DollarSign,
-    href: "/system/sales",
-  },
   {
     title: "Reports",
     icon: BarChart3,
-    href: "/system/reports",
+    href: PATH.REPORTS,
   },
+
+  /*
+ 
+
   {
     title: "Logs",
     icon: History,

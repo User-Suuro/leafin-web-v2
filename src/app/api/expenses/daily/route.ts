@@ -13,7 +13,9 @@ export async function GET() {
       .groupBy(sql`DATE(${expenses.expenseDate})`)
       .orderBy(sql`DATE(${expenses.expenseDate})`);
 
-    return Response.json(daily);
+    const last30 = daily.slice(-30);
+
+    return Response.json(last30);
   } catch (error) {
     console.error("Error fetching daily expenses:", error);
     return Response.json(

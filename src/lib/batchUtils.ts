@@ -41,3 +41,33 @@ export function calculatePlantStage(dateAdded: Date | string) {
 
     return { stage, status, ageDays };
 }
+
+export function calculateBatchStats(batches: any[]) { // Using any[] here as generic batch
+    const now = new Date();
+    let totalAge = 0;
+    const stageCounts: Record<string, number> = {};
+
+    batches.forEach((b) => {
+        if (b.dateAdded) {
+            const added = new Date(b.dateAdded);
+            const diffTime = Math.abs(now.getTime() - added.getTime());
+            const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+            totalAge += diffDays;
+        }
+        const stage = b.condition || "Unknown";
+        stageCounts[stage] = (stageCounts[stage] || 0) + 1;
+    });
+
+    const avgAge = batches.length > 0 ? totalAge / batches.length : 0;
+
+    let majorityStage = "N/A";
+    let maxCount = 0;
+    for (const [stage, count] of Object.entries(stageCounts)) {
+        if (count > maxCount) {
+            maxCount = count;
+            majorityStage = stage;
+        }
+    }
+
+    return { avgAge, majorityStage };
+}
