@@ -3,7 +3,7 @@
 import { Button } from "@/components/ui/button";
 import Image from "next/image";
 import Link from "next/link";
-import Landing from "@/assets/Landing.png";
+import Landing from "@/assets/landing.png";
 import FadeIn from "@/components/animations/FadeIn";
 import ScaleFade from "@/components/animations/ScaleFade";
 
