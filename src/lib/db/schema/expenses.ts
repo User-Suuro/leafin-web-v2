@@ -10,8 +10,8 @@ export const expenses = mysqlTable("expenses", {
   description: text("description"),
   amount: decimal("amount", { precision: 10, scale: 2 }).notNull(),
 
-  relatedFishBatchId: int("related_fish_batch_id").references(() => fishBatch.fishBatchId),
-  relatedPlantBatchId: int("related_plant_batch_id").references(() => plantBatch.plantBatchId),
+  relatedFishBatchId: int("related_fish_batch_id").references(() => fishBatch.fishBatchId, { onDelete: "cascade", onUpdate: "cascade" }),
+  relatedPlantBatchId: int("related_plant_batch_id").references(() => plantBatch.plantBatchId, { onDelete: "cascade", onUpdate: "cascade" }),
 });
 
 export type Expense = typeof expenses.$inferSelect;

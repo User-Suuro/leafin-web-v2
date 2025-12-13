@@ -14,9 +14,9 @@ export const tasks = mysqlTable("tasks", {
     .default("pending"),
 
   relatedFishBatchId: int("related_fish_batch_id")
-    .references(() => fishBatch.fishBatchId),
+    .references(() => fishBatch.fishBatchId, { onDelete: "cascade", onUpdate: "cascade" }),
   relatedPlantBatchId: int("related_plant_batch_id")
-    .references(() => plantBatch.plantBatchId),
+    .references(() => plantBatch.plantBatchId, { onDelete: "cascade", onUpdate: "cascade" }),
 });
 
 export type Task = typeof tasks.$inferSelect;

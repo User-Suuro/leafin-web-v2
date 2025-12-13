@@ -11,7 +11,7 @@ export const userInfo = mysqlTable("user_info", {
   address: varchar("address", { length: 100 }).notNull(),
   userId: varchar("user_id", { length: 36 })
     .notNull()
-    .references(() => user.id, { onDelete: "cascade" }),
+    .references(() => user.id, { onDelete: "cascade", onUpdate: "cascade" }),
 });
 
 export const userRelations = relations(userInfo, ({ one }) => ({
