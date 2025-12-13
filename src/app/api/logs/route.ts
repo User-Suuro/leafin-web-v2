@@ -52,7 +52,9 @@ export async function GET() {
       let type: "task" | "fish_sale" | "plant_sale" | "expense" | "sensor" | "audit" =
         "task";
 
-      if (row.action) type = "audit";
+      if (row.resourceType === "EXPENSE") type = "expense";
+      else if (row.resourceType === "TASK") type = "task";
+      else if (row.action) type = "audit";
       else if (row.fishSaleId) type = "fish_sale";
       else if (row.plantSaleId) type = "plant_sale";
       else if (row.expenseId) type = "expense";

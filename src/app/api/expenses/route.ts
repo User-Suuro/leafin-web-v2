@@ -2,6 +2,9 @@ import { NextResponse } from "next/server";
 import { db } from "@/lib/db/drizzle";
 import { expenses } from "@/lib/db/schema/expenses";
 import { logActivity } from "@/lib/logUtils";
+import { logAction } from "@/lib/logger";
+import { auth } from "@/lib/auth";
+import { headers } from "next/headers";
 
 // GET all expenses
 export async function GET() {
@@ -20,6 +23,10 @@ export async function GET() {
 // POST new expense
 export async function POST(req: Request) {
   try {
+    const session = await auth.api.getSession({
+      headers: await headers(),
+    });
+
     const body = await req.json();
 
     // ✅ Require fishBatch if category is "feed"
@@ -42,12 +49,21 @@ export async function POST(req: Request) {
 
     const result = await db.insert(expenses).values(newExpense);
 
-    await logActivity({
-      notes: `Added Expense: ${body.category} - ${body.amount}. ${body.description || ""}`,
-      relatedExpenseId: Number(result[0].insertId),
-      fishBatchId: body.relatedFishBatchId || undefined,
-      plantBatchId: body.relatedPlantBatchId || undefined,
-    });
+
+
+    if (session?.user?.id) {
+      await logAction(
+        session.user.id,
+        "CREATE",
+        "EXPENSE",
+        {
+          ...newExpense,
+          expenseId: Number(result[0].insertId),
+        },
+        String(result[0].insertId),
+        `Added Expense: ${body.category} - ${body.amount}`
+      );
+    }
 
     return NextResponse.json(result, { status: 201 });
   } catch (error) {

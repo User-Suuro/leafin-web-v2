@@ -2,9 +2,15 @@ import { NextResponse } from "next/server";
 import { db } from "@/lib/db/drizzle";
 import { expenses } from "@/lib/db/schema/expenses";
 import { eq } from "drizzle-orm";
+import { logAction } from "@/lib/logger";
+import { auth } from "@/lib/auth";
+import { headers } from "next/headers";
 
 export async function DELETE(req: Request) {
   try {
+    const session = await auth.api.getSession({
+      headers: await headers(),
+    });
     const url = new URL(req.url);
     const idParam = url.pathname.split("/").pop();
     const expenseId = Number(idParam);
@@ -29,6 +35,17 @@ export async function DELETE(req: Request) {
 
     // Delete the expense
     await db.delete(expenses).where(eq(expenses.expenseId, expenseId));
+
+    if (session?.user?.id) {
+      await logAction(
+        session.user.id,
+        "DELETE",
+        "EXPENSE",
+        expense[0],
+        String(expenseId),
+        `Deleted Expense: ${expense[0].category} - ${expense[0].amount}`
+      );
+    }
 
     return NextResponse.json({ message: "Expense deleted" }, { status: 200 });
   } catch (error) {
