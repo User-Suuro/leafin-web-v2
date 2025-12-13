@@ -103,6 +103,13 @@ export default function AddReportModal({
     });
 
     doc.save(`${title}_Report_${period}.pdf`);
+
+    // Log the action
+    fetch("/api/reports/log", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ reportType: title, period }),
+    }).catch(console.error);
   };
 
   return (
