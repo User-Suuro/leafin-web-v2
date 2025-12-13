@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import { Separator } from "@/components/ui/separator";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow, } from "@/components/ui/table";
+import { Pagination, PaginationContent, PaginationItem, PaginationLink, PaginationNext, PaginationPrevious } from "@/components/ui/pagination";
 import { Tabs, TabsContent, TabsList, TabsTrigger, } from "@/components/ui/tabs";
 import { History, ClipboardList, DollarSign, Activity } from "lucide-react";
 
@@ -22,6 +23,8 @@ type Log = {
 export default function LogsPage() {
   const [logs, setLogs] = useState<Log[]>([]);
   const [loading, setLoading] = useState(true);
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 10;
 
   // ✅ Fetch logs from API
   useEffect(() => {
@@ -146,39 +149,75 @@ export default function LogsPage() {
                       </TableRow>
                     </TableHeader>
                     <TableBody>
-                      {logs.map((log) => (
-                        <TableRow key={log.log_id}>
-                          <TableCell className="whitespace-nowrap">
-                            {new Date(log.event_time).toLocaleString()}
-                          </TableCell>
-                          <TableCell className="font-medium">
-                            {log.user_name || "-"}
-                          </TableCell>
-                          <TableCell>
-                            {log.action ? (
-                              <span className="inline-flex items-center rounded-md bg-blue-50 px-2 py-1 text-xs font-medium text-blue-700 ring-1 ring-inset ring-blue-700/10">
-                                {log.action}
-                              </span>
-                            ) : (
-                              <span className="text-muted-foreground">-</span>
-                            )}
-                          </TableCell>
-                          <TableCell>
-                            {log.resource_type ? (
-                              <span className="text-xs font-mono bg-muted px-1 py-0.5 rounded">
-                                {log.resource_type}
-                              </span>
-                            ) : (
-                              log.type
-                            )}
-                          </TableCell>
-                          <TableCell className="max-w-[300px] truncate" title={log.notes}>
-                            {log.notes}
-                          </TableCell>
-                        </TableRow>
-                      ))}
+                      {logs
+                        .slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage)
+                        .map((log) => (
+                          <TableRow key={log.log_id}>
+                            <TableCell className="whitespace-nowrap">
+                              {new Date(log.event_time).toLocaleString()}
+                            </TableCell>
+                            <TableCell className="font-medium">
+                              {log.user_name || "-"}
+                            </TableCell>
+                            <TableCell>
+                              {log.action ? (
+                                <span className="inline-flex items-center rounded-md bg-blue-50 px-2 py-1 text-xs font-medium text-blue-700 ring-1 ring-inset ring-blue-700/10">
+                                  {log.action}
+                                </span>
+                              ) : (
+                                <span className="text-muted-foreground">-</span>
+                              )}
+                            </TableCell>
+                            <TableCell>
+                              {log.resource_type ? (
+                                <span className="text-xs font-mono bg-muted px-1 py-0.5 rounded">
+                                  {log.resource_type}
+                                </span>
+                              ) : (
+                                log.type
+                              )}
+                            </TableCell>
+                            <TableCell className="max-w-[300px] truncate" title={log.notes}>
+                              {log.notes}
+                            </TableCell>
+                          </TableRow>
+                        ))}
                     </TableBody>
                   </Table>
+
+                  <div className="mt-4">
+                    <Pagination>
+                      <PaginationContent>
+                        <PaginationItem>
+                          <PaginationPrevious
+                            href="#"
+                            onClick={(e) => {
+                              e.preventDefault();
+                              if (currentPage > 1) setCurrentPage(p => p - 1);
+                            }}
+                            className={currentPage === 1 ? "pointer-events-none opacity-50" : "cursor-pointer"}
+                          />
+                        </PaginationItem>
+
+                        <PaginationItem>
+                          <span className="px-4 text-sm text-muted-foreground">
+                            Page {currentPage} of {Math.ceil(logs.length / itemsPerPage)}
+                          </span>
+                        </PaginationItem>
+
+                        <PaginationItem>
+                          <PaginationNext
+                            href="#"
+                            onClick={(e) => {
+                              e.preventDefault();
+                              if (currentPage < Math.ceil(logs.length / itemsPerPage)) setCurrentPage(p => p + 1);
+                            }}
+                            className={currentPage >= Math.ceil(logs.length / itemsPerPage) ? "pointer-events-none opacity-50" : "cursor-pointer"}
+                          />
+                        </PaginationItem>
+                      </PaginationContent>
+                    </Pagination>
+                  </div>
                 </CardContent>
               </Card>
             </TabsContent>
@@ -193,6 +232,32 @@ export default function LogsPage() {
                   <ul className="space-y-2">
                     {logs
                       .filter((log) => log.type === "task")
+                      .map((log) => (
+                        <li
+                          key={log.log_id}
+                          className="p-3 rounded border bg-muted/30"
+                        >
+                          <p className="text-sm">{log.notes}</p>
+                          <p className="text-xs text-muted-foreground">
+                            {log.event_time}
+                          </p>
+                        </li>
+                      ))}
+                  </ul>
+                </CardContent>
+              </Card>
+            </TabsContent>
+
+            {/* Sales Logs */}
+            <TabsContent value="sale">
+              <Card>
+                <CardHeader>
+                  <CardTitle>Sales Logs</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <ul className="space-y-2">
+                    {logs
+                      .filter((log) => ["fish_sale", "plant_sale"].includes(log.type))
                       .map((log) => (
                         <li
                           key={log.log_id}
