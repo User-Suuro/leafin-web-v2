@@ -15,6 +15,36 @@ import One from "@/assets/about-img/one.png";
 import Two from "@/assets/about-img/two.png";
 import Three from "@/assets/about-img/three.png";
 
+import Gab from "@/assets/team/gab.png";
+import Master from "@/assets/team/master.png";
+import Jub from "@/assets/team/jub.png";
+import Neko from "@/assets/team/neko.png";
+import Josh from "@/assets/team/josh.png";
+import Azied from "@/assets/team/azied.png";
+import Ajan from "@/assets/team/ajan.png";
+import Mikay from "@/assets/team/mikay.png";
+import Divine from "@/assets/team/divine.png";
+import Renz from "@/assets/team/doms.png";
+import Johann from "@/assets/team/johann.png";
+
+const profiles1 = [
+  Gab,
+  Master,
+  Jub,
+  Neko,
+  Josh,
+  Azied,
+]
+
+
+const profiles2 = [
+  Ajan,
+  Mikay,
+  Divine,
+  Renz,
+  Johann,
+]
+
 export default function About() {
   const { scrollY } = useScroll();
   const opacity = useTransform(scrollY, [0, 200], [1, 0]);
@@ -120,7 +150,7 @@ export default function About() {
 
 
 {/* INFO SECTION */}
-      <div className="max-w-6xl mx-auto flex flex-col gap-10 mb-32">
+      <div className="max-w-6xl mx-auto flex flex-col gap-10 mb-24">
         {[
           {
             icon: <Leaf className="w-16 h-16 text-green-700" />,
@@ -168,7 +198,171 @@ export default function About() {
           </motion.div>
         ))}
       </div>
+      {/* Meet the Team */}
 
+      <div className="max-w-6xl mx-auto flex flex-col items-center gap-10 mb-32">
+        <FadeIn delay={0.2}>
+          <h1 className="text-5xl text-center font-bold text-green-700 mb-0">
+              Meet the <span className="text-[#1A6641]">Team</span>
+          </h1>
+        </FadeIn>
+        <FadeIn delay={0.3}>
+            <p>
+              Hardware Support & System Programmer
+          </p>
+        </FadeIn>
+
+          <SlideFade>
+          <Card className="bg-[#DCFFEA] shadow-md">
+          <CardContent>
+            <div className="flex flex-row gap-5">
+              <div className="flex flex-col">
+                <Image
+                  src={profiles1[0]}
+                  alt={`Profile 1`}
+                  height={150}
+                  width={150}
+                  className="object-cover transition-transform duration-300 ease-in-out hover:scale-105 cursor-pointer"
+                />
+                <h1 className="text-center mt-2">
+                  Gabriel de la Cruz
+                </h1>
+              </div>
+              <div className="flex flex-col">
+                <Image
+                  src={profiles1[1]}
+                  alt={`Profile 1`}
+                  height={150}
+                  width={150}
+                  className="object-cover transition-transform duration-300 ease-in-out hover:scale-105 cursor-pointer"
+                />
+                <h1 className="text-center mt-2">
+                  Godwin Galvez
+                </h1>
+              </div>
+              <div className="flex flex-col">
+                <Image
+                  src={profiles1[2]}
+                  alt={`Profile 1`}
+                  height={150}
+                  width={150}
+                  className="object-cover transition-transform duration-300 ease-in-out hover:scale-105 cursor-pointer"
+                />
+                <h1 className="text-center mt-2">
+                  John Mark Pardo
+                </h1>
+              </div>
+              <div className="flex flex-col">
+                <Image
+                  src={profiles1[3]}
+                  alt={`Profile 1`}
+                  height={150}
+                  width={150}
+                  className="object-cover transition-transform duration-300 ease-in-out hover:scale-105 cursor-pointer"
+                />
+                <h1 className="text-center mt-2">
+                  Levnicolayevich Adlawan
+                </h1>
+              </div>
+              <div className="flex flex-col">
+                <Image
+                  src={profiles1[4]}
+                  alt={`Profile 1`}
+                  height={150}
+                  width={150}
+                  className="object-cover transition-transform duration-300 ease-in-out hover:scale-105 cursor-pointer"
+                />
+                <h1 className="text-center mt-2">
+                  Joshua Guevarra
+                </h1>
+              </div>
+              <div className="flex flex-col">
+                <Image
+                  src={profiles1[5]}
+                  alt={`Profile 1`}
+                  height={150}
+                  width={150}
+                  className="object-cover transition-transform duration-300 ease-in-out hover:scale-105 cursor-pointer"
+                />
+                <h1 className="text-center mt-2">
+                  Jaycee Azied R. Delen
+                </h1>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+        </SlideFade>
+
+        <SlideFade>
+        <Card className="bg-[#DCFFEA] shadow-md">
+          <CardContent>
+            <div className="flex flex-row gap-5">
+              <div className="flex flex-col">
+                <Image
+                  src={profiles2[0]}
+                  alt={`Profile 1`}
+                  height={150}
+                  width={150}
+                  className="object-cover transition-transform duration-300 ease-in-out hover:scale-105 cursor-pointer"
+                />
+                <h1 className="text-center mt-2">
+                  Ajaniel Tejares
+                </h1>
+              </div>
+              <div className="flex flex-col">
+                <Image
+                  src={profiles2[1]}
+                  alt={`Profile 1`}
+                  height={150}
+                  width={150}
+                  className="object-cover transition-transform duration-300 ease-in-out hover:scale-105 cursor-pointer"
+                />
+                <h1 className="text-center mt-2">
+                  Mikylla Nañez
+                </h1>
+              </div>
+              <div className="flex flex-col">
+                <Image
+                  src={profiles2[2]}
+                  alt={`Profile 1`}
+                  height={150}
+                  width={150}
+                  className="object-cover transition-transform duration-300 ease-in-out hover:scale-105 cursor-pointer"
+                />
+                <h1 className="text-center">
+                  Divine Mae Ponciano
+                </h1>
+              </div>
+              <div className="flex flex-col">
+                <Image
+                  src={profiles2[3]}
+                  alt={`Profile 1`}
+                  height={150}
+                  width={150}
+                  className="object-cover transition-transform duration-300 ease-in-out hover:scale-105 cursor-pointer"
+                />
+                <h1 className="text-center mt-2">
+                  Renz Dominic Azul
+                </h1>
+              </div>
+              <div className="flex flex-col">
+                <Image
+                  src={profiles2[4]}
+                  alt={`Profile 1`}
+                  height={150}
+                  width={150}
+                  className="object-cover transition-transform duration-300 ease-in-out hover:scale-105 cursor-pointer"
+                />
+                <h1 className="text-center mt-2">
+                  Johann Chavez
+                </h1>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+        </SlideFade>
+
+      </div>
     </main>
   );
 }
