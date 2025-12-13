@@ -22,8 +22,6 @@ type Log = {
 export default function LogsPage() {
   const [logs, setLogs] = useState<Log[]>([]);
   const [loading, setLoading] = useState(true);
-  const [currentPage, setCurrentPage] = useState(1);
-  const itemsPerPage = 10;
 
   // ✅ Fetch logs from API
   useEffect(() => {
