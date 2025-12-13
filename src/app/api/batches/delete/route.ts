@@ -3,9 +3,20 @@ import { db } from "@/lib/db/drizzle";
 import { fishBatch } from "@/lib/db/schema/fishBatch";
 import { plantBatch } from "@/lib/db/schema/plantBatch";
 import { eq } from "drizzle-orm";
+import { auth } from "@/lib/auth"; // Added import
+import { headers } from "next/headers"; // Added import
+import { logAction } from "@/lib/logger"; // Added import
 
 export async function POST(req: Request) {
   try {
+    const session = await auth.api.getSession({
+      headers: await headers(),
+    });
+
+    if (!session) {
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    }
+
     const { type, batchId } = (await req.json()) as {
       type: "fish" | "plant";
       batchId: number;
@@ -22,6 +33,15 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: "Batch not found" }, { status: 404 });
 
     await db.delete(table).where(eq(idColumn, batchId));
+
+    await logAction(
+      session.user.id,
+      "DELETE",
+      "BATCH",
+      { type, batchId },
+      String(batchId),
+      `Deleted ${type} batch #${batchId}`
+    );
 
     return NextResponse.json({ success: true });
   } catch (error) {

@@ -3,6 +3,9 @@ import { db } from "@/lib/db/drizzle";
 import { feederSettings } from "@/lib/db/schema/feederSetting";
 import { eq } from "drizzle-orm";
 import { NextResponse } from "next/server";
+import { auth } from "@/lib/auth"; // Added import
+import { headers } from "next/headers"; // Added import
+import { logAction } from "@/lib/logger"; // Added import
 
 export async function GET() {
     try {
@@ -32,6 +35,14 @@ export async function GET() {
 
 export async function POST(req: Request) {
     try {
+        const session = await auth.api.getSession({
+            headers: await headers(),
+        });
+
+        if (!session) {
+            return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+        }
+
         const body = await req.json();
         const { type, data } = body;
 
@@ -45,6 +56,16 @@ export async function POST(req: Request) {
                     schedules: data.schedules, // Assuming string (JSON)
                 })
                 .where(eq(feederSettings.id, 1));
+
+            await logAction(
+                session.user.id,
+                "UPDATE",
+                "SENSOR",
+                { action: "UPDATE_SETTINGS", ...data },
+                "1", // Feeder ID is always 1
+                "Updated feeder settings"
+            );
+
             return NextResponse.json({ success: true });
         }
 
@@ -59,6 +80,16 @@ export async function POST(req: Request) {
                     lastFeedTime: now
                 })
                 .where(eq(feederSettings.id, 1));
+
+            await logAction(
+                session.user.id,
+                "UPDATE",
+                "SENSOR",
+                { action: "MANUAL_FEED" },
+                "1",
+                "Triggered manual feed"
+            );
+
             return NextResponse.json({ success: true, message: "Fed successfully" });
         }
 

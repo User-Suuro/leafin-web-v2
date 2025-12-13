@@ -3,7 +3,9 @@ import { db } from "@/lib/db/drizzle";
 import { fishBatch } from "@/lib/db/schema/fishBatch";
 import { plantBatch } from "@/lib/db/schema/plantBatch";
 import { eq } from "drizzle-orm";
-import { logActivity } from "@/lib/logUtils";
+import { logAction } from "@/lib/logger";
+import { auth } from "@/lib/auth";
+import { headers } from "next/headers";
 
 export async function POST(req: Request) {
   try {
@@ -48,17 +50,33 @@ export async function POST(req: Request) {
       );
     }
 
+    const session = await auth.api.getSession({
+      headers: await headers(),
+    });
+
+    if (!session?.user) {
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    }
+
     // ✅ This is the missing piece
     await db
       .update(table)
       .set({ batchStatus: "discarded" })
       .where(eq(idColumn, batchId));
 
-    await logActivity({
-      notes: `Discarded ${type === "fish" ? "Fish" : "Plant"} Batch #${batchId}.`,
-      fishBatchId: type === "fish" ? Number(batchId) : undefined,
-      plantBatchId: type === "plant" ? Number(batchId) : undefined,
-    });
+    await logAction(
+      session.user.id,
+      "UPDATE", // Discard is a status update
+      "BATCH",
+      {
+        notes: `Discarded ${type === "fish" ? "Fish" : "Plant"} Batch #${batchId}.`,
+        batchType: type,
+        batchId: Number(batchId),
+        action: "DISCARD" // add specific sub-action in details
+      },
+      String(batchId),
+      `Discarded ${type} batch #${batchId}`
+    );
 
     // Return the updated batch (optional)
     const [updatedBatch] = await db

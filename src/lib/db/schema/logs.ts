@@ -1,5 +1,6 @@
 // db/schema/logs.ts
-import { mysqlTable, int, datetime, text, bigint } from "drizzle-orm/mysql-core";
+import { mysqlTable, int, datetime, text, bigint, json, varchar } from "drizzle-orm/mysql-core";
+import { user } from "./auth-schema";
 
 import { sql } from "drizzle-orm";
 import { plantBatch } from "./plantBatch";
@@ -13,6 +14,13 @@ export const logs = mysqlTable("logs", {
   logId: int("log_id").primaryKey().autoincrement(),
   eventTime: datetime("event_time").default(sql`CURRENT_TIMESTAMP`),
   notes: text("notes"),
+
+  // Audit Fields
+  userId: varchar("user_id", { length: 36 }).references(() => user.id, { onDelete: "set null" }),
+  action: varchar("action", { length: 100 }), // CREATE, UPDATE, DELETE, etc.
+  resourceType: varchar("resource_type", { length: 100 }), // USER, BATCH, EXPENSE, etc.
+  resourceId: varchar("resource_id", { length: 100 }), // Generic ID reference
+  details: json("details"), // Store generic details
 
   taskId: bigint("task_id", { mode: "number", unsigned: true })
     .references(() => tasks.taskId, { onDelete: "cascade", onUpdate: "cascade" }),

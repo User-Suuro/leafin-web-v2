@@ -12,7 +12,11 @@ type Log = {
   log_id: number;
   event_time: string;
   notes: string;
-  type: "task" | "fish_sale" | "plant_sale" | "expense" | "sensor";
+  type: "task" | "fish_sale" | "plant_sale" | "expense" | "sensor" | "audit";
+  user_name?: string;
+  action?: string;
+  resource_type?: string;
+  details?: any;
 };
 
 export default function LogsPage() {
@@ -135,16 +139,42 @@ export default function LogsPage() {
                     <TableHeader>
                       <TableRow>
                         <TableHead>Time</TableHead>
-                        <TableHead>Type</TableHead>
-                        <TableHead>Notes</TableHead>
+                        <TableHead>User</TableHead>
+                        <TableHead>Action</TableHead>
+                        <TableHead>Resource</TableHead>
+                        <TableHead>Details</TableHead>
                       </TableRow>
                     </TableHeader>
                     <TableBody>
                       {logs.map((log) => (
                         <TableRow key={log.log_id}>
-                          <TableCell>{log.event_time}</TableCell>
-                          <TableCell>{log.type}</TableCell>
-                          <TableCell>{log.notes}</TableCell>
+                          <TableCell className="whitespace-nowrap">
+                            {new Date(log.event_time).toLocaleString()}
+                          </TableCell>
+                          <TableCell className="font-medium">
+                            {log.user_name || "-"}
+                          </TableCell>
+                          <TableCell>
+                            {log.action ? (
+                              <span className="inline-flex items-center rounded-md bg-blue-50 px-2 py-1 text-xs font-medium text-blue-700 ring-1 ring-inset ring-blue-700/10">
+                                {log.action}
+                              </span>
+                            ) : (
+                              <span className="text-muted-foreground">-</span>
+                            )}
+                          </TableCell>
+                          <TableCell>
+                            {log.resource_type ? (
+                              <span className="text-xs font-mono bg-muted px-1 py-0.5 rounded">
+                                {log.resource_type}
+                              </span>
+                            ) : (
+                              log.type
+                            )}
+                          </TableCell>
+                          <TableCell className="max-w-[300px] truncate" title={log.notes}>
+                            {log.notes}
+                          </TableCell>
                         </TableRow>
                       ))}
                     </TableBody>

@@ -3,6 +3,9 @@ import { db } from "@/lib/db/drizzle";
 import { motor } from "@/lib/db/schema/motor";
 import { eq } from "drizzle-orm";
 import { NextResponse } from "next/server";
+import { auth } from "@/lib/auth"; // Added import
+import { headers } from "next/headers"; // Added import
+import { logAction } from "@/lib/logger"; // Added import
 
 export async function GET() {
     try {
@@ -27,6 +30,14 @@ export async function GET() {
 
 export async function POST(req: Request) {
     try {
+        const session = await auth.api.getSession({
+            headers: await headers(),
+        });
+
+        if (!session) {
+            return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+        }
+
         const body = await req.json();
         const { type, status } = body;
 
@@ -41,6 +52,15 @@ export async function POST(req: Request) {
                 updated_at: new Date().toISOString(),
             })
             .where(eq(motor.id, 1));
+
+        await logAction(
+            session.user.id,
+            "UPDATE",
+            "SENSOR",
+            { action: "TOGGLE_PUMP", pump: type, status },
+            "1", // Motor controller ID
+            `Toggled ${type === "main_pump" ? "Main Pump" : "Mini Pump"} ${status ? "ON" : "OFF"}`
+        );
 
         return NextResponse.json({ success: true });
     } catch (error) {
