@@ -56,12 +56,8 @@ export default function ApiTest() {
       <h2>💧 Turbidity: {data?.turbid ?? "N/A"}</h2>
       <h2>🧪 pH Level: {data?.ph ?? "N/A"}</h2>
       <h2>🌡️ Water Temperature: {data?.water_temp ?? "N/A"} °C</h2>
-      <h2>
-        Water Level Normal:{" "}
-        {data ? (data.float_switch ? "✅ Yes" : "❌ No") : "N/A"}
-      </h2>
+
       <h2>TDS: {data?.tds ?? "N/A"} ppm</h2>
-      <h2>NH3 Gas: {data?.nh3_gas ?? "N/A"} ppm</h2>
       <h2>
         Web Time:{" "}
         {data?.created_at ? new Date(data.created_at).toLocaleTimeString() : "N/A"}
