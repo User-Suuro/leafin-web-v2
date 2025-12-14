@@ -2,7 +2,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import React, { useEffect, useState } from "react";
 import { Badge } from "@/components/ui/badge";
 import { SensorData } from "@/types/sensor-values";
-import { AlertTriangle, CheckCircle, Thermometer, Droplets, Activity, Wind, Waves } from "lucide-react";
+import { AlertTriangle, CheckCircle, Thermometer, Droplets, Activity, Wind, Waves, FlaskConical, Zap } from "lucide-react";
 
 export const Alerts: React.FC = () => {
   const [data, setData] = useState<SensorData | null>(null);
@@ -35,8 +35,8 @@ export const Alerts: React.FC = () => {
     { key: "ph", label: "pH Level", icon: <Droplets className="w-4 h-4" />, unit: "" },
     { key: "tds", label: "TDS", icon: <Activity className="w-4 h-4" />, unit: "ppm" },
     { key: "nitrogen", label: "Nitrogen", icon: <Wind className="w-4 h-4" />, unit: "mg/L" },
-    { key: "phosphorus", label: "Phosphorus", icon: <Waves className="w-4 h-4" />, unit: "mg/L" },
-    { key: "potassium", label: "Potassium", icon: <Waves className="w-4 h-4" />, unit: "mg/L" },
+    { key: "phosphorus", label: "Phosphorus", icon: <FlaskConical className="w-4 h-4" />, unit: "mg/L" },
+    { key: "potassium", label: "Potassium", icon: <Zap className="w-4 h-4" />, unit: "mg/L" },
     { key: "turbid", label: "Turbidity", icon: <Waves className="w-4 h-4" />, unit: "NTU" },
   ];
 
