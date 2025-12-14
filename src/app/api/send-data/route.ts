@@ -28,9 +28,9 @@ export async function POST(req: Request) {
     const phVal = parseFloat(body.ph);
     if (!isNaN(phVal)) {
       if (phVal < 6.0) {
-        await createNotification("Critical pH Level", `pH level is dangerously low: ${phVal}.`, "alert");
+        await createNotification("Critical pH Level", `pH level is dangerously low: ${phVal}. Low pH can stall biofiltration and cause acidosis.`, "alert");
       } else if (phVal > 9.0) {
-        await createNotification("Critical pH Level", `pH level is dangerously high: ${phVal}.`, "alert");
+        await createNotification("Critical pH Level", `pH level is dangerously high: ${phVal}. High pH drastically increases ammonia toxicity, distinct direct threat to fish health.`, "alert");
       }
     }
 
@@ -99,10 +99,10 @@ export async function GET() {
     if (diff > 15000) {
 
       // --- Offline Alert Logic ---
-      // check if we created an "alert" with title "Sensor Offline" in the last 2 minutes.
+      // check if we created an "alert" with title "Sensor Offline" in the last 1 minutes.
       // Use application time (Date.now()) to match the 'createdAt' we are now enforcing in createNotification
       const appNow = Date.now();
-      const oneMinuteAgo = new Date(appNow - 30 * 60 * 1000);
+      const oneMinuteAgo = new Date(appNow - 1000); // 1 second ago
 
       console.log("DEBUG OFFLINE CHECK:", {
         appNow: new Date(appNow).toISOString(),
