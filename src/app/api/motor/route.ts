@@ -18,7 +18,7 @@ export async function GET() {
                 feeder: false,
                 updated_at: new Date().toISOString(),
             });
-            return NextResponse.json({ main_pump: false, feeder: false });
+            return NextResponse.json({ result });
         }
 
         return NextResponse.json(result[0]);
