@@ -15,10 +15,10 @@ export async function GET() {
             await db.insert(motor).values({
                 id: 1,
                 main_pump: false,
-                mini_pump: false,
+                feeder: false,
                 updated_at: new Date().toISOString(),
             });
-            return NextResponse.json({ main_pump: false, mini_pump: false });
+            return NextResponse.json({ main_pump: false, feeder: false });
         }
 
         return NextResponse.json(result[0]);
@@ -41,7 +41,8 @@ export async function POST(req: Request) {
         const body = await req.json();
         const { type, status } = body;
 
-        if ((type !== "main_pump" && type !== "mini_pump") || typeof status !== "boolean") {
+        const validTypes = ["main_pump", "feeder"];
+        if (!validTypes.includes(type) || typeof status !== "boolean") {
             return NextResponse.json({ error: "Invalid input" }, { status: 400 });
         }
 
@@ -57,9 +58,9 @@ export async function POST(req: Request) {
             session.user.id,
             "UPDATE",
             "SENSOR",
-            { action: "TOGGLE_PUMP", pump: type, status },
-            "1", // Motor controller ID
-            `Toggled ${type === "main_pump" ? "Main Pump" : "Mini Pump"} ${status ? "ON" : "OFF"}`
+            { action: "TOGGLE_MOTOR", device: type, status },
+            "1",
+            `Toggled ${type} ${status ? "ON" : "OFF"}`
         );
 
         return NextResponse.json({ success: true });

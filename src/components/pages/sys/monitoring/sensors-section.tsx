@@ -117,6 +117,7 @@ export function SensorsSection() {
                         value={sensorValues.connected ? `${sensorValues.potassium} mg/L` : "N/A"}
                         icon={<Wind className="h-4 w-4" />}
                         history={sensorValues.history}
+                        dataKey="potassium"
                         unit="mg/L"
                     />
                 </div>
