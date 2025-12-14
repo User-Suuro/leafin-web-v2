@@ -102,7 +102,7 @@ export async function GET() {
       // check if we created an "alert" with title "Sensor Offline" in the last 1 minutes.
       // Use application time (Date.now()) to match the 'createdAt' we are now enforcing in createNotification
       const appNow = Date.now();
-      const oneMinuteAgo = new Date(appNow - 1000); // 1 second ago
+      const oneMinuteAgo = new Date(appNow - 30 * 60 * 1000); // 1 minute ago
 
       console.log("DEBUG OFFLINE CHECK:", {
         appNow: new Date(appNow).toISOString(),
