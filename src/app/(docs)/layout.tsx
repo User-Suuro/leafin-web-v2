@@ -7,7 +7,7 @@ export default function DocsLayout({
   children: React.ReactNode;
 }) {
   return (
-    <main>
+    <main className="overflow-hidden">
       <Navbar />
       {children}
       <Footer />
