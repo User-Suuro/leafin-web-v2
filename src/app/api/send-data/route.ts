@@ -34,7 +34,7 @@ export async function GET() {
       .select()
       .from(sensorData)
       .orderBy(desc(sensorData.created_at))
-      .limit(5);
+      .limit(20);
 
     if (rows.length === 0) {
       return NextResponse.json({

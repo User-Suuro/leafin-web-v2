@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger, } from "@/components/ui/dialog";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow, } from "@/components/ui/table";
 import { SensorData } from "@/types/sensor-values";
+import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, Cell } from "recharts";
 
 export interface SensorCardProps {
   name: string;
@@ -24,6 +25,12 @@ export function SensorCard({ name, value, icon, history = [], dataKey, unit = ""
     value !== "N/A" &&
     value !== "Loading..." &&
     value !== "";
+
+  // Prepare chart data (reverse to show oldest to newest left to right)
+  const chartData = [...history].reverse().map(item => ({
+    time: new Date(item.created_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+    value: dataKey ? (item[dataKey] as number) : 0,
+  }));
 
   return (
     <Card>
@@ -64,33 +71,64 @@ export function SensorCard({ name, value, icon, history = [], dataKey, unit = ""
                 View History
               </Button>
             </DialogTrigger>
-            <DialogContent className="max-w-md">
+            <DialogContent className="max-w-2xl">
               <DialogHeader>
                 <DialogTitle>{name} History</DialogTitle>
                 <DialogDescription>
-                  Last 5 readings for {name}.
+                  Last 20 readings for {name}.
                 </DialogDescription>
               </DialogHeader>
-              <Table>
-                <TableHeader>
-                  <TableRow>
-                    <TableHead>Time</TableHead>
-                    <TableHead>Value</TableHead>
-                  </TableRow>
-                </TableHeader>
-                <TableBody>
-                  {history.map((record, index) => (
-                    <TableRow key={index}>
-                      <TableCell>
-                        {new Date(record.created_at).toLocaleTimeString()}
-                      </TableCell>
-                      <TableCell>
-                        {record[dataKey] as string | number} {unit}
-                      </TableCell>
+
+              <div className="w-full h-64 mt-4">
+                <ResponsiveContainer width="100%" height="100%">
+                  <BarChart data={chartData}>
+                    <XAxis
+                      dataKey="time"
+                      fontSize={12}
+                      tickLine={false}
+                      axisLine={false}
+                    />
+                    <YAxis
+                      fontSize={12}
+                      tickLine={false}
+                      axisLine={false}
+                      unit={unit}
+                    />
+                    <Tooltip
+                      cursor={{ fill: 'transparent' }}
+                      contentStyle={{ borderRadius: '8px', border: 'none', boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1)' }}
+                    />
+                    <Bar dataKey="value" radius={[4, 4, 0, 0]}>
+                      {chartData.map((entry, index) => (
+                        <Cell key={`cell-${index}`} fill={index === chartData.length - 1 ? "#22c55e" : "#94a3b8"} />
+                      ))}
+                    </Bar>
+                  </BarChart>
+                </ResponsiveContainer>
+              </div>
+
+              <div className="max-h-60 overflow-y-auto">
+                <Table>
+                  <TableHeader>
+                    <TableRow>
+                      <TableHead>Time</TableHead>
+                      <TableHead>Value</TableHead>
                     </TableRow>
-                  ))}
-                </TableBody>
-              </Table>
+                  </TableHeader>
+                  <TableBody>
+                    {history.map((record, index) => (
+                      <TableRow key={index}>
+                        <TableCell>
+                          {new Date(record.created_at).toLocaleTimeString()}
+                        </TableCell>
+                        <TableCell>
+                          {record[dataKey] as string | number} {unit}
+                        </TableCell>
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
+              </div>
             </DialogContent>
           </Dialog>
         ) : null}
