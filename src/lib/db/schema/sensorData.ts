@@ -11,5 +11,6 @@ export const sensorData = mysqlTable("sensor_data", {
   nitrogen: varchar("nitrogen", { length: 100 }).notNull(),
   phosphorus: varchar("phosphorus", { length: 100 }).notNull(),
   potassium: varchar("potassium", { length: 100 }).notNull(),
+  water_level: varchar("water_level", { length: 50 }).default("HIGH"), // 'HIGH' (safe) or 'LOW' (alert)
   created_at: timestamp("created_at").defaultNow().notNull(),
 });

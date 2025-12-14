@@ -4,6 +4,7 @@ import { Sidebar } from "../_components/sidebar";
 import { Session } from "@/lib/auth-utils/auth-types";
 import { redirect } from "next/navigation";
 import { PATH } from "@/lib/path";
+import { NotificationBell } from "@/components/notifications/NotificationBell";
 
 // we pass session data to children
 
@@ -31,6 +32,10 @@ export default async function SystemLayout({
     <main className="flex min-h-screen min-w-screen overflow-hidden pr-8">
       <div className="flex">
         <Sidebar session={session} />
+      </div>
+
+      <div className="absolute top-4 right-8 z-50">
+        <NotificationBell />
       </div>
 
       {React.cloneElement(child, { session })}
