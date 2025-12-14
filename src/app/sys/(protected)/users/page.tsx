@@ -5,7 +5,7 @@ import { useCallback, useEffect, useState } from "react";
 import { DatagridColumn, DatagridView } from "@/components/dgv/datagrid-view";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
-import { BanIcon, Pencil, Trash2 } from "lucide-react";
+import { BanIcon, Pencil, Trash2, Undo2 } from "lucide-react";
 import { ROLES } from "@/lib/auth-utils/permissions";
 import {
   Tooltip,
@@ -75,6 +75,27 @@ export default function UsersPage() {
       }
 
       toast.success("User banned successfully");
+      fetchUsers();
+    } catch (error: any) {
+      toast.error(error.message);
+    }
+  };
+
+  const handleUnban = async (userId: string) => {
+    try {
+      const response = await fetch("/api/admin/helpers/unban-user", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ userId }),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.error || "Failed to unban user");
+      }
+
+      toast.success("User unbanned successfully");
       fetchUsers();
     } catch (error: any) {
       toast.error(error.message);
@@ -204,26 +225,48 @@ export default function UsersPage() {
                 </TooltipContent>
               </Tooltip>
 
-              <Tooltip>
-                <TooltipTrigger asChild>
-                  <Button
-                    variant="secondary"
-                    size="icon"
-                    className="text-orange-600 hover:text-orange-700 hover:bg-orange-100"
-                    onClick={() => {
-                      // Simple confirmation for now, or could be a modal
-                      if (confirm(`Are you sure you want to ban ${user.email}?`)) {
-                        handleBan(user.id);
-                      }
-                    }}
-                  >
-                    <BanIcon className="h-4 w-4" />
-                  </Button>
-                </TooltipTrigger>
-                <TooltipContent>
-                  <p>Ban User</p>
-                </TooltipContent>
-              </Tooltip>
+              {user.banned ? (
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <Button
+                      variant="secondary"
+                      size="icon"
+                      className="text-green-600 hover:text-green-700 hover:bg-green-100"
+                      onClick={() => {
+                        if (confirm(`Are you sure you want to unban ${user.email}?`)) {
+                          handleUnban(user.id);
+                        }
+                      }}
+                    >
+                      <Undo2 className="h-4 w-4" />
+                    </Button>
+                  </TooltipTrigger>
+                  <TooltipContent>
+                    <p>Unban User</p>
+                  </TooltipContent>
+                </Tooltip>
+              ) : (
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <Button
+                      variant="secondary"
+                      size="icon"
+                      className="text-orange-600 hover:text-orange-700 hover:bg-orange-100"
+                      onClick={() => {
+                        // Simple confirmation for now, or could be a modal
+                        if (confirm(`Are you sure you want to ban ${user.email}?`)) {
+                          handleBan(user.id);
+                        }
+                      }}
+                    >
+                      <BanIcon className="h-4 w-4" />
+                    </Button>
+                  </TooltipTrigger>
+                  <TooltipContent>
+                    <p>Ban User</p>
+                  </TooltipContent>
+                </Tooltip>
+              )}
             </TooltipProvider>
           </div>
         );
