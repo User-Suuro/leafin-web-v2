@@ -2,7 +2,9 @@
 import { NextResponse } from "next/server";
 import { db } from "@/lib/db/drizzle";
 import { sensorData } from "@/lib/db/schema/sensorData";
-import { desc, sql } from "drizzle-orm";
+import { notifications } from "@/lib/db/schema/notifications";
+import { desc, sql, and, eq, gt } from "drizzle-orm";
+import { createNotification } from "@/lib/notifications";
 
 export const dynamic = 'force-dynamic';
 
@@ -19,7 +21,25 @@ export async function POST(req: Request) {
       nitrogen: body.nitrogen,
       phosphorus: body.phosphorus,
       potassium: body.potassium,
+      water_level: body.water_level || "HIGH", // Default to HIGH (safe) if missing
     });
+
+    // --- Alert Logic ---
+    const phVal = parseFloat(body.ph);
+    if (!isNaN(phVal)) {
+      if (phVal < 6.0) {
+        await createNotification("Critical pH Level", `pH level is dangerously low: ${phVal}.`, "alert");
+      } else if (phVal > 9.0) {
+        await createNotification("Critical pH Level", `pH level is dangerously high: ${phVal}.`, "alert");
+      }
+    }
+
+    const waterLevel = body.water_level; // Expecting "LOW" or "HIGH" or "1"/"0"
+    if (waterLevel === "LOW" || waterLevel === "0") {
+      await createNotification("Low Water Level", "Water level detected as LOW. Check the tank immediately.", "alert");
+    }
+
+    // -------------------
 
     return NextResponse.json({ success: true });
   } catch (err) {
@@ -51,6 +71,7 @@ export async function GET() {
         nitrogen: "",
         phosphorus: "",
         potassium: "",
+        water_level: "",
         created_at: null,
         history: [],
       });
@@ -76,6 +97,37 @@ export async function GET() {
 
     // If last update was >15s ago, treat as disconnected
     if (diff > 15000) {
+
+      // --- Offline Alert Logic ---
+      // check if we created an "alert" with title "Sensor Offline" in the last 2 minutes.
+      // Use application time (Date.now()) to match the 'createdAt' we are now enforcing in createNotification
+      const appNow = Date.now();
+      const oneMinuteAgo = new Date(appNow - 1 * 60 * 1000);
+
+      console.log("DEBUG OFFLINE CHECK:", {
+        appNow: new Date(appNow).toISOString(),
+        oneMinuteAgo: oneMinuteAgo.toISOString(),
+      });
+
+      const recentAlerts = await db
+        .select()
+        .from(notifications)
+        .where(
+          and(
+            eq(notifications.title, "Sensor Offline"),
+            gt(notifications.createdAt, oneMinuteAgo)
+          )
+        )
+        .limit(1);
+
+      console.log("DEBUG RECENT ALERTS:", recentAlerts);
+
+      if (recentAlerts.length === 0) {
+        console.log("CREATING NEW OFFLINE ALERT");
+        await createNotification("Sensor Offline", "Sensors have stopped sending data.", "alert");
+      }
+      // ---------------------------
+
       return NextResponse.json({
         connected: false,
         time: "",
