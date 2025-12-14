@@ -6,6 +6,7 @@ import { motion, useScroll, useTransform } from "framer-motion";
 
 import SlideFade from "@/components/animations/SlideFade";
 import FadeIn from "@/components/animations/FadeIn";
+import SlideFromLeft from "@/components/animations/SlideLeft";
 
 import Lettuce from "@/assets/about-img/Lettuce.png";
 import Tilapia from "@/assets/about-img/Tilapia.png";
@@ -35,6 +36,12 @@ const profiles1 = [
   Josh,
   Azied,
 ]
+
+const cardBase =
+  "bg-[#DCFFEA] shadow-md w-[200px] h-[260px] flex items-center justify-center";
+
+const imageBase =
+  "object-cover rounded-md transition-transform duration-300 ease-in-out hover:scale-105 cursor-pointer";
 
 
 const profiles2 = [
@@ -212,155 +219,62 @@ export default function About() {
           </p>
         </FadeIn>
 
-          <SlideFade>
-          <Card className="bg-[#DCFFEA] shadow-md">
-          <CardContent>
-            <div className="flex flex-row gap-5">
-              <div className="flex flex-col">
+        
+        <div className="flex flex-row gap-5">
+        {profiles1.map((profile, index) => (
+          <SlideFromLeft key={index} delay={index * 0.1}>
+            <Card className={cardBase}>
+              <CardContent className="flex flex-col items-center justify-center gap-3 p-4">
                 <Image
-                  src={profiles1[0]}
-                  alt={`Profile 1`}
-                  height={150}
+                  src={profile}
+                  alt={`Profile ${index + 1}`}
                   width={150}
-                  className="object-cover transition-transform duration-300 ease-in-out hover:scale-105 cursor-pointer"
-                />
-                <h1 className="text-center mt-2">
-                  Gabriel de la Cruz
-                </h1>
-              </div>
-              <div className="flex flex-col">
-                <Image
-                  src={profiles1[1]}
-                  alt={`Profile 1`}
                   height={150}
-                  width={150}
-                  className="object-cover transition-transform duration-300 ease-in-out hover:scale-105 cursor-pointer"
+                  className={imageBase}
                 />
-                <h1 className="text-center mt-2">
-                  Godwin Galvez
+                <h1 className="text-center text-sm font-medium">
+                  {[
+                    "Gabriel de la Cruz",
+                    "Godwin Galvez",
+                    "John Mark Pardo",
+                    "Levnicolayevich Adlawan",
+                    "Joshua Guevarra",
+                    "Jaycee Azied R. Delen",
+                  ][index]}
                 </h1>
-              </div>
-              <div className="flex flex-col">
-                <Image
-                  src={profiles1[2]}
-                  alt={`Profile 1`}
-                  height={150}
-                  width={150}
-                  className="object-cover transition-transform duration-300 ease-in-out hover:scale-105 cursor-pointer"
-                />
-                <h1 className="text-center mt-2">
-                  John Mark Pardo
-                </h1>
-              </div>
-              <div className="flex flex-col">
-                <Image
-                  src={profiles1[3]}
-                  alt={`Profile 1`}
-                  height={150}
-                  width={150}
-                  className="object-cover transition-transform duration-300 ease-in-out hover:scale-105 cursor-pointer"
-                />
-                <h1 className="text-center mt-2">
-                  Levnicolayevich Adlawan
-                </h1>
-              </div>
-              <div className="flex flex-col">
-                <Image
-                  src={profiles1[4]}
-                  alt={`Profile 1`}
-                  height={150}
-                  width={150}
-                  className="object-cover transition-transform duration-300 ease-in-out hover:scale-105 cursor-pointer"
-                />
-                <h1 className="text-center mt-2">
-                  Joshua Guevarra
-                </h1>
-              </div>
-              <div className="flex flex-col">
-                <Image
-                  src={profiles1[5]}
-                  alt={`Profile 1`}
-                  height={150}
-                  width={150}
-                  className="object-cover transition-transform duration-300 ease-in-out hover:scale-105 cursor-pointer"
-                />
-                <h1 className="text-center mt-2">
-                  Jaycee Azied R. Delen
-                </h1>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-        </SlideFade>
+              </CardContent>
+            </Card>
+          </SlideFromLeft>
+        ))}
+      </div>
 
-        <SlideFade>
-        <Card className="bg-[#DCFFEA] shadow-md">
-          <CardContent>
-            <div className="flex flex-row gap-5">
-              <div className="flex flex-col">
-                <Image
-                  src={profiles2[0]}
-                  alt={`Profile 1`}
-                  height={150}
-                  width={150}
-                  className="object-cover transition-transform duration-300 ease-in-out hover:scale-105 cursor-pointer"
-                />
-                <h1 className="text-center mt-2">
-                  Ajaniel Tejares
-                </h1>
-              </div>
-              <div className="flex flex-col">
-                <Image
-                  src={profiles2[1]}
-                  alt={`Profile 1`}
-                  height={150}
-                  width={150}
-                  className="object-cover transition-transform duration-300 ease-in-out hover:scale-105 cursor-pointer"
-                />
-                <h1 className="text-center mt-2">
-                  Mikylla Nañez
-                </h1>
-              </div>
-              <div className="flex flex-col">
-                <Image
-                  src={profiles2[2]}
-                  alt={`Profile 1`}
-                  height={150}
-                  width={150}
-                  className="object-cover transition-transform duration-300 ease-in-out hover:scale-105 cursor-pointer"
-                />
-                <h1 className="text-center">
-                  Divine Mae Ponciano
-                </h1>
-              </div>
-              <div className="flex flex-col">
-                <Image
-                  src={profiles2[3]}
-                  alt={`Profile 1`}
-                  height={150}
-                  width={150}
-                  className="object-cover transition-transform duration-300 ease-in-out hover:scale-105 cursor-pointer"
-                />
-                <h1 className="text-center mt-2">
-                  Renz Dominic Azul
-                </h1>
-              </div>
-              <div className="flex flex-col">
-                <Image
-                  src={profiles2[4]}
-                  alt={`Profile 1`}
-                  height={150}
-                  width={150}
-                  className="object-cover transition-transform duration-300 ease-in-out hover:scale-105 cursor-pointer"
-                />
-                <h1 className="text-center mt-2">
-                  Johann Chavez
-                </h1>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-        </SlideFade>
+
+      <div className="flex flex-row gap-5">
+      {profiles2.map((profile, index) => (
+        <SlideFromLeft key={index} delay={index * 0.1}>
+          <Card className={cardBase}>
+            <CardContent className="flex flex-col items-center justify-center gap-3 p-4">
+              <Image
+                src={profile}
+                alt={`Profile ${index + 1}`}
+                width={150}
+                height={150}
+                className={imageBase}
+              />
+              <h1 className="text-center text-sm font-medium">
+                {[
+                  "Ajaniel Tejares",
+                  "Mikylla Nañez",
+                  "Divine Mae Ponciano",
+                  "Renz Dominic Azul",
+                  "Johann Chavez",
+                ][index]}
+              </h1>
+            </CardContent>
+          </Card>
+        </SlideFromLeft>
+      ))}
+    </div>
 
       </div>
     </main>
