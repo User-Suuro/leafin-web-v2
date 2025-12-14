@@ -27,7 +27,14 @@ export async function POST(req: Request) {
     });
 
     const body = await req.json();
-    const result = await db.insert(tasks).values(body);
+
+    // Ensure assignedTo is handled if present
+    const cleanBody = {
+      ...body,
+      assignedTo: body.assignedTo || null,
+    }
+
+    const result = await db.insert(tasks).values(cleanBody);
 
     if (session?.user?.id) {
       await logAction(
@@ -35,11 +42,11 @@ export async function POST(req: Request) {
         "CREATE",
         "TASK",
         {
-          ...body,
+          ...cleanBody,
           taskId: Number(result[0].insertId),
         },
         String(result[0].insertId),
-        `Created Task: ${body.title} (${body.taskType})`
+        `Created Task: ${cleanBody.title} (${cleanBody.taskType})`
       );
     }
 
