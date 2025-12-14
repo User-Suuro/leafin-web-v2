@@ -39,6 +39,35 @@ export async function POST(req: Request) {
       await createNotification("Low Water Level", "Water level detected as LOW. Check the tank immediately.", "alert");
     }
 
+    // --- NPK Alert Logic ---
+    const nVal = parseFloat(body.nitrogen);
+    if (!isNaN(nVal)) {
+      if (nVal < 20) {
+        await createNotification("Low Nitrogen", `Nitrogen level is low: ${nVal} mg/L. May cause stunted growth.`, "warning");
+      } else if (nVal > 100) {
+        await createNotification("High Nitrogen", `Nitrogen level is high: ${nVal} mg/L. Potential toxicity or imbalance.`, "alert");
+      }
+    }
+
+    const pVal = parseFloat(body.phosphorus);
+    if (!isNaN(pVal)) {
+      if (pVal < 10) {
+        await createNotification("Low Phosphorus", `Phosphorus level is low: ${pVal} mg/L. May affect root and flower development.`, "warning");
+      } else if (pVal > 100) {
+        await createNotification("High Phosphorus", `Phosphorus level is high: ${pVal} mg/L. Can lock out other nutrients.`, "alert");
+      }
+    }
+
+    const kVal = parseFloat(body.potassium);
+    if (!isNaN(kVal)) {
+      if (kVal < 20) {
+        await createNotification("Low Potassium", `Potassium level is low: ${kVal} mg/L. Essential for plant immunity and quality.`, "warning");
+      } else if (kVal > 200) {
+        await createNotification("High Potassium", `Potassium level is high: ${kVal} mg/L. May interfere with Calcium/Magnesium uptake.`, "alert");
+      }
+    }
+    // -----------------------
+
     // -------------------
 
     return NextResponse.json({ success: true });

@@ -35,6 +35,7 @@ export function AllSensorsChart({ history }: AllSensorsChartProps) {
             nitrogen: Number(item.nitrogen),
             phosphorus: Number(item.phosphorus),
             potassium: Number(item.potassium),
+            water_level: item.water_level === "HIGH" ? 1 : 0,
         }));
 
     if (history.length === 0) {
@@ -90,6 +91,7 @@ export function AllSensorsChart({ history }: AllSensorsChartProps) {
                             <Bar yAxisId="left" dataKey="nitrogen" name="Nitrogen (mg/L)" fill="#f97316" />
                             <Bar yAxisId="left" dataKey="phosphorus" name="Phosphorus (mg/L)" fill="#f97316" />
                             <Bar yAxisId="left" dataKey="potassium" name="Potassium (mg/L)" fill="#f97316" />
+                            <Bar yAxisId="left" dataKey="water_level" name="Water Level (1=HIGH, 0=LOW)" fill="#06b6d4" />
 
                             <Bar yAxisId="right" dataKey="tds" name="TDS (ppm)" fill="#22c55e" />
                         </BarChart>

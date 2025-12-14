@@ -9,6 +9,7 @@ export interface SensorData {
   nitrogen: number;
   phosphorus: number;
   potassium: number;
+  water_level: string;
   created_at: number;
   history?: SensorData[];
 }
