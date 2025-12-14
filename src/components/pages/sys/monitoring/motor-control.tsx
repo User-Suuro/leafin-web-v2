@@ -14,11 +14,11 @@ export function MotorControl() {
     });
 
     // Default state to prevent unauthorized errors if data is undefined
-    const state = data || { main_pump: false, mini_pump: false };
+    const state = data || { main_pump: false, feeder: false };
 
     const [isPending, startTransition] = useTransition();
 
-    const handleToggle = async (key: "main_pump" | "mini_pump", checked: boolean) => {
+    const handleToggle = async (key: "main_pump" | "feeder", checked: boolean) => {
         // 1. Optimistic update
         await mutate({ ...state, [key]: checked }, false);
 
@@ -71,20 +71,23 @@ export function MotorControl() {
                 </CardContent>
             </Card>
 
+            {/* Feeder Control */}
             <Card>
                 <CardHeader>
-                    <CardTitle>Mini Pump</CardTitle>
+                    <CardTitle>Feeder</CardTitle>
                 </CardHeader>
                 <CardContent className="flex items-center justify-between">
-                    <Label htmlFor="mini-pump-mode">
-                        {state.mini_pump ? "Running" : "Stopped"}
+                    <Label>
+                        Trigger Feeding
                     </Label>
-                    <Switch
-                        id="mini-pump-mode"
-                        checked={state.mini_pump}
-                        onCheckedChange={(checked: boolean) => handleToggle("mini_pump", checked)}
+                    <button
+                        className={`px-4 py-2 rounded-md font-medium text-white transition-colors ${isPending ? "bg-gray-400 cursor-not-allowed" : "bg-blue-600 hover:bg-blue-700"
+                            }`}
+                        onClick={() => handleToggle("feeder", true)}
                         disabled={isPending}
-                    />
+                    >
+                        {isPending ? "Feeding..." : "Feed Now"}
+                    </button>
                 </CardContent>
             </Card>
         </div>

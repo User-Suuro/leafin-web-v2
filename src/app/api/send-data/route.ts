@@ -21,7 +21,7 @@ export async function POST(req: Request) {
       nitrogen: body.nitrogen,
       phosphorus: body.phosphorus,
       potassium: body.potassium,
-      water_level: body.water_level || "HIGH", // Default to HIGH (safe) if missing
+      water_level: body.water_level || "HIGH",
     });
 
     // --- Alert Logic ---
@@ -34,12 +34,11 @@ export async function POST(req: Request) {
       }
     }
 
-    const waterLevel = body.water_level; // Expecting "LOW" or "HIGH" or "1"/"0"
+    const waterLevel = body.water_level;
     if (waterLevel === "LOW" || waterLevel === "0") {
       await createNotification("Low Water Level", "Water level detected as LOW. Check the tank immediately.", "alert");
     }
 
-    // --- NPK Alert Logic ---
     const nVal = parseFloat(body.nitrogen);
     if (!isNaN(nVal)) {
       if (nVal < 20) {
@@ -64,6 +63,15 @@ export async function POST(req: Request) {
         await createNotification("Low Potassium", `Potassium level is low: ${kVal} mg/L. Essential for plant immunity and quality.`, "warning");
       } else if (kVal > 200) {
         await createNotification("High Potassium", `Potassium level is high: ${kVal} mg/L. May interfere with Calcium/Magnesium uptake.`, "alert");
+      }
+    }
+
+    const tempVal = parseFloat(body.water_temp);
+    if (!isNaN(tempVal)) {
+      if (tempVal < 20) {
+        await createNotification("Low Water Temperature", `Water temperature is low: ${tempVal}°C. Metabolism slows, fish may stop eating.`, "warning");
+      } else if (tempVal > 30) {
+        await createNotification("High Water Temperature", `Water temperature is high: ${tempVal}°C. Oxygen levels may drop, causing stress.`, "alert");
       }
     }
     // -----------------------
@@ -117,19 +125,17 @@ export async function GET() {
     console.log("DEBUG PRE-ADJUST: dbNow=", dbNow, " lastUpdate=", lastUpdate, " diff=", diff);
 
     // Compensation: If diff is ~ -8 hours (sensor time appears 8h in future vs dbNow)
-    // This happens if created_at is Local Time and dbNow is UTC.
     if (diff < -10000000) { // If < -2.7 hours (roughly)
       diff += 28800000; // Add 8 hours (28,800,000 ms)
     }
 
     console.log("DEBUG POST-ADJUST: diff=", diff);
 
-    // If last update was >15s ago, treat as disconnected
-    if (diff > 15000) {
+    // If last update was >20s ago, treat as disconnected
+    if (diff > 20000) {
 
       // --- Offline Alert Logic ---
       // check if we created an "alert" with title "Sensor Offline" in the last 1 minutes.
-      // Use application time (Date.now()) to match the 'createdAt' we are now enforcing in createNotification
       const appNow = Date.now();
       const oneMinuteAgo = new Date(appNow - 30 * 60 * 1000); // 1 minute ago
 
