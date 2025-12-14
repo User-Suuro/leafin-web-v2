@@ -6,8 +6,9 @@ export interface SensorData {
   turbid: number;
   water_temp: number;
   tds: number;
-  float_switch: boolean;
-  nh3_gas: number;
+  nitrogen: number;
+  phosphorus: number;
+  potassium: number;
   created_at: number;
   history?: SensorData[];
 }

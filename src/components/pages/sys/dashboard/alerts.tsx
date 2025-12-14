@@ -34,7 +34,9 @@ export const Alerts: React.FC = () => {
     { key: "water_temp", label: "Water Temp", icon: <Thermometer className="w-4 h-4" />, unit: "°C" },
     { key: "ph", label: "pH Level", icon: <Droplets className="w-4 h-4" />, unit: "" },
     { key: "tds", label: "TDS", icon: <Activity className="w-4 h-4" />, unit: "ppm" },
-    { key: "nh3_gas", label: "Ammonia", icon: <Wind className="w-4 h-4" />, unit: "ppm" },
+    { key: "nitrogen", label: "Nitrogen", icon: <Wind className="w-4 h-4" />, unit: "mg/L" },
+    { key: "phosphorus", label: "Phosphorus", icon: <Waves className="w-4 h-4" />, unit: "mg/L" },
+    { key: "potassium", label: "Potassium", icon: <Waves className="w-4 h-4" />, unit: "mg/L" },
     { key: "turbid", label: "Turbidity", icon: <Waves className="w-4 h-4" />, unit: "NTU" },
   ];
 

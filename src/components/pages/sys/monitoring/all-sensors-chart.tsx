@@ -19,9 +19,7 @@ interface AllSensorsChartProps {
 }
 
 export function AllSensorsChart({ history }: AllSensorsChartProps) {
-    // Reverse history to show oldest to newest (left to right) if needed,
-    // typically charts read better chronologically.
-    // Assuming history[0] is newest.
+    // Reverse history to show oldest to newest (left to right)
     const data = [...history]
         .reverse()
         .map((item) => ({
@@ -33,12 +31,25 @@ export function AllSensorsChart({ history }: AllSensorsChartProps) {
             water_temp: Number(item.water_temp),
             ph: Number(item.ph),
             tds: Number(item.tds),
-            nh3_gas: Number(item.nh3_gas),
             turbid: Number(item.turbid),
+            nitrogen: Number(item.nitrogen),
+            phosphorus: Number(item.phosphorus),
+            potassium: Number(item.potassium),
         }));
 
     if (history.length === 0) {
-        return null;
+        return (
+            <Card className="col-span-1 md:col-span-2 lg:col-span-4 mt-6">
+                <CardHeader>
+                    <CardTitle>Combined Sensor History</CardTitle>
+                </CardHeader>
+                <CardContent>
+                    <div className="flex items-center justify-center w-full h-[400px] text-muted-foreground">
+                        No sensor data available
+                    </div>
+                </CardContent>
+            </Card>
+        );
     }
 
     return (
@@ -61,7 +72,7 @@ export function AllSensorsChart({ history }: AllSensorsChartProps) {
                             <CartesianGrid strokeDasharray="3 3" vertical={false} />
                             <XAxis dataKey="time" />
 
-                            {/* Left Axis for small values: pH, Temp, Ammonia, Turbidity */}
+                            {/* Left Axis for small values: pH, Temp, NPK, Turbidity */}
                             <YAxis yAxisId="left" orientation="left" stroke="#8884d8" />
 
                             {/* Right Axis for large values: TDS */}
@@ -75,8 +86,10 @@ export function AllSensorsChart({ history }: AllSensorsChartProps) {
 
                             <Bar yAxisId="left" dataKey="water_temp" name="Water Temp (°C)" fill="#3b82f6" />
                             <Bar yAxisId="left" dataKey="ph" name="pH" fill="#a855f7" />
-                            <Bar yAxisId="left" dataKey="nh3_gas" name="Ammonia (ppm)" fill="#f97316" />
                             <Bar yAxisId="left" dataKey="turbid" name="Turbidity (NTU)" fill="#64748b" />
+                            <Bar yAxisId="left" dataKey="nitrogen" name="Nitrogen (mg/L)" fill="#f97316" />
+                            <Bar yAxisId="left" dataKey="phosphorus" name="Phosphorus (mg/L)" fill="#f97316" />
+                            <Bar yAxisId="left" dataKey="potassium" name="Potassium (mg/L)" fill="#f97316" />
 
                             <Bar yAxisId="right" dataKey="tds" name="TDS (ppm)" fill="#22c55e" />
                         </BarChart>

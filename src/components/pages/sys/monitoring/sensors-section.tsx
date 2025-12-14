@@ -26,8 +26,9 @@ export function SensorsSection() {
             }
         };
 
+
         fetchData(); // Initial fetch
-        const interval = setInterval(fetchData, 5000); // Poll every 5 seconds
+        const interval = setInterval(fetchData, 2000); // Poll every 2 seconds
 
         return () => clearInterval(interval);
     }, []);
@@ -37,7 +38,9 @@ export function SensorsSection() {
         water_temp: data?.water_temp?.toString() || "Loading...",
         ph: data?.ph?.toString() || "Loading...",
         tds: data?.tds?.toString() || "Loading...",
-        nh3_gas: data?.nh3_gas?.toString() || "Loading...",
+        nitrogen: data?.nitrogen?.toString() || "Loading...",
+        phosphorus: data?.phosphorus?.toString() || "Loading...",
+        potassium: data?.potassium?.toString() || "Loading...",
         connected: data?.connected ?? false,
         history: data?.history || [],
     };
@@ -45,9 +48,9 @@ export function SensorsSection() {
     // If loading for the first time
     if (loading && !data) {
         return (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-                {[1, 2, 3, 4].map((i) => (
-                    <div key={i} className="h-32 rounded-xl border bg-card text-card-foreground shadow animate-pulse" />
+            <div className="flex overflow-x-auto gap-4 pb-4">
+                {[1, 2, 3, 4, 5, 6].map((i) => (
+                    <div key={i} className="min-w-[250px] h-32 rounded-xl border bg-card text-card-foreground shadow animate-pulse" />
                 ))}
             </div>
         )
@@ -55,43 +58,74 @@ export function SensorsSection() {
 
     return (
         <div className="space-y-6">
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-                <SensorCard
-                    name="Water Temp"
-                    value={sensorValues.connected ? `${sensorValues.water_temp} °C` : "N/A"}
-                    icon={<Thermometer className="h-4 w-4" />}
-                    history={sensorValues.history}
-                    dataKey="water_temp"
-                    unit="°C"
-                />
-                <SensorCard
-                    name="pH Level"
-                    value={sensorValues.connected ? sensorValues.ph : "N/A"}
-                    icon={<Droplets className="h-4 w-4" />}
-                    history={sensorValues.history}
-                    dataKey="ph"
-                    unit=""
-                />
-                <SensorCard
-                    name="TDS"
-                    value={sensorValues.connected ? `${sensorValues.tds} ppm` : "N/A"}
-                    icon={<Activity className="h-4 w-4" />}
-                    history={sensorValues.history}
-                    dataKey="tds"
-                    unit="ppm"
-                />
-                <SensorCard
-                    name="Ammonia"
-                    value={sensorValues.connected ? `${sensorValues.nh3_gas} ppm` : "N/A"}
-                    icon={<Wind className="h-4 w-4" />}
-                    history={sensorValues.history}
-                    dataKey="nh3_gas"
-                    unit="ppm"
-                />
+            {/* Scrollable Container */}
+            <div className="flex flex-nowrap overflow-x-auto gap-4 pb-4 snap-x snap-mandatory w-full max-w-[85vw] md:max-w-[calc(100vw-18rem)]">
+                <div className="min-w-[300px] snap-center">
+                    <SensorCard
+                        name="Water Temp"
+                        value={sensorValues.connected ? `${sensorValues.water_temp} °C` : "N/A"}
+                        icon={<Thermometer className="h-4 w-4" />}
+                        history={sensorValues.history}
+                        dataKey="water_temp"
+                        unit="°C"
+                    />
+                </div>
+                <div className="min-w-[300px] snap-center">
+                    <SensorCard
+                        name="pH Level"
+                        value={sensorValues.connected ? sensorValues.ph : "N/A"}
+                        icon={<Droplets className="h-4 w-4" />}
+                        history={sensorValues.history}
+                        dataKey="ph"
+                        unit=""
+                    />
+                </div>
+                <div className="min-w-[300px] snap-center">
+                    <SensorCard
+                        name="TDS"
+                        value={sensorValues.connected ? `${sensorValues.tds} ppm` : "N/A"}
+                        icon={<Activity className="h-4 w-4" />}
+                        history={sensorValues.history}
+                        dataKey="tds"
+                        unit="ppm"
+                    />
+                </div>
+                <div className="min-w-[300px] snap-center">
+                    <SensorCard
+                        name="Nitrogen"
+                        value={sensorValues.connected ? `${sensorValues.nitrogen} mg/L` : "N/A"}
+                        icon={<Wind className="h-4 w-4" />}
+                        history={sensorValues.history}
+                        dataKey="nitrogen"
+                        unit="mg/L"
+                    />
+                </div>
+                <div className="min-w-[300px] snap-center">
+                    <SensorCard
+                        name="Phosphorus"
+                        value={sensorValues.connected ? `${sensorValues.phosphorus} mg/L` : "N/A"}
+                        icon={<Wind className="h-4 w-4" />}
+                        history={sensorValues.history}
+                        dataKey="phosphorus"
+                        unit="mg/L"
+                    />
+                </div>
+                <div className="min-w-[300px] snap-center">
+                    <SensorCard
+                        name="Potassium"
+                        value={sensorValues.connected ? `${sensorValues.potassium} mg/L` : "N/A"}
+                        icon={<Wind className="h-4 w-4" />}
+                        history={sensorValues.history}
+                        dataKey="potassium"
+                        unit="mg/L"
+                    />
+                </div>
             </div>
 
             {/* Combined Chart */}
-            <AllSensorsChart history={sensorValues.history} />
+            <div className="mt-8">
+                <AllSensorsChart history={sensorValues.history} />
+            </div>
         </div>
     );
 }
