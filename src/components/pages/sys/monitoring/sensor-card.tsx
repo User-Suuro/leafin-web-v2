@@ -27,10 +27,18 @@ export function SensorCard({ name, value, icon, history = [], dataKey, unit = ""
     value !== "";
 
   // Prepare chart data (reverse to show oldest to newest left to right)
-  const chartData = [...history].reverse().map(item => ({
-    time: new Date(item.created_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
-    value: dataKey ? (item[dataKey] as number) : 0,
-  }));
+  const chartData = [...history].reverse().map(item => {
+    let val = 0;
+    if (dataKey === 'water_level') {
+      val = item[dataKey] === 'HIGH' ? 1 : 0;
+    } else if (dataKey) {
+      val = Number(item[dataKey]) || 0;
+    }
+    return {
+      time: new Date(item.created_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+      value: val,
+    };
+  });
 
   return (
     <Card>

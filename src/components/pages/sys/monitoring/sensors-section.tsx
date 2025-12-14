@@ -41,6 +41,7 @@ export function SensorsSection() {
         nitrogen: data?.nitrogen?.toString() || "Loading...",
         phosphorus: data?.phosphorus?.toString() || "Loading...",
         potassium: data?.potassium?.toString() || "Loading...",
+        water_level: data?.water_level?.toString() || "Loading...",
         connected: data?.connected ?? false,
         history: data?.history || [],
     };
@@ -116,8 +117,17 @@ export function SensorsSection() {
                         value={sensorValues.connected ? `${sensorValues.potassium} mg/L` : "N/A"}
                         icon={<Wind className="h-4 w-4" />}
                         history={sensorValues.history}
-                        dataKey="potassium"
                         unit="mg/L"
+                    />
+                </div>
+                <div className="min-w-[300px] snap-center">
+                    <SensorCard
+                        name="Water Level"
+                        value={sensorValues.connected ? sensorValues.water_level : "N/A"}
+                        icon={<Droplets className="h-4 w-4" />}
+                        history={sensorValues.history}
+                        dataKey="water_level"
+                        unit=""
                     />
                 </div>
             </div>
