@@ -2,7 +2,9 @@
 import { NextResponse } from "next/server";
 import { db } from "@/lib/db/drizzle";
 import { sensorData } from "@/lib/db/schema/sensorData";
-import { desc } from "drizzle-orm";
+import { desc, sql } from "drizzle-orm";
+
+export const dynamic = 'force-dynamic';
 
 export async function POST(req: Request) {
   try {
@@ -14,8 +16,9 @@ export async function POST(req: Request) {
       turbid: body.turbid,
       water_temp: body.water_temp,
       tds: body.tds,
-      float_switch: body.float_switch,
-      nh3_gas: body.nh3_gas,
+      nitrogen: body.nitrogen,
+      phosphorus: body.phosphorus,
+      potassium: body.potassium,
     });
 
     return NextResponse.json({ success: true });
@@ -45,19 +48,34 @@ export async function GET() {
         turbid: "",
         water_temp: "",
         tds: "",
-        float_switch: false,
-        nh3_gas: "",
+        nitrogen: "",
+        phosphorus: "",
+        potassium: "",
         created_at: null,
         history: [],
       });
     }
 
-    const lastSensorData = rows[0];
-    const now = Date.now();
-    const lastUpdate = new Date(lastSensorData.created_at).getTime();
+    // Get DB time to ensure comparison is consistent (cancels out timezone diffs)
+    const [timeRows]: any = await db.execute(sql`SELECT NOW() as db_now`);
+    const dbNow = new Date(timeRows[0].db_now).getTime();
 
-    // If last update was >20s ago, treat as disconnected
-    if (now - lastUpdate > 20000) {
+    const lastSensorData = rows[0];
+    const lastUpdate = new Date(lastSensorData.created_at).getTime();
+    let diff = dbNow - lastUpdate;
+
+    console.log("DEBUG PRE-ADJUST: dbNow=", dbNow, " lastUpdate=", lastUpdate, " diff=", diff);
+
+    // Compensation: If diff is ~ -8 hours (sensor time appears 8h in future vs dbNow)
+    // This happens if created_at is Local Time and dbNow is UTC.
+    if (diff < -10000000) { // If < -2.7 hours (roughly)
+      diff += 28800000; // Add 8 hours (28,800,000 ms)
+    }
+
+    console.log("DEBUG POST-ADJUST: diff=", diff);
+
+    // If last update was >15s ago, treat as disconnected
+    if (diff > 15000) {
       return NextResponse.json({
         connected: false,
         time: "",
@@ -66,17 +84,30 @@ export async function GET() {
         turbid: "",
         water_temp: "",
         tds: "",
-        float_switch: false,
-        nh3_gas: "",
+        nitrogen: "",
+        phosphorus: "",
+        potassium: "",
         created_at: lastSensorData.created_at,
         history: rows,
+        debug: {
+          dbNowRaw: timeRows[0].db_now,
+          dbNowISO: new Date(dbNow).toISOString(),
+          lastUpdateISO: new Date(lastUpdate).toISOString(),
+          diff: diff
+        }
       });
     }
 
     return NextResponse.json({
       connected: true,
-      ...lastSensorData, // includes created_at directly
+      ...lastSensorData,
       history: rows,
+      debug: {
+        dbNowRaw: timeRows[0].db_now,
+        dbNowISO: new Date(dbNow).toISOString(),
+        lastUpdateISO: new Date(lastUpdate).toISOString(),
+        diff: diff
+      }
     });
   } catch (err) {
     console.error("GET /api/send-sensor-data failed:", err);

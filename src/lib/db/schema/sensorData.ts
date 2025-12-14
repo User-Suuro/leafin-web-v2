@@ -8,7 +8,8 @@ export const sensorData = mysqlTable("sensor_data", {
   turbid: varchar("turbid", { length: 100 }).notNull(),
   water_temp: varchar("water_temp", { length: 100 }).notNull(),
   tds: varchar("tds", { length: 100 }).notNull(),
-  float_switch: boolean("float_switch").notNull(),
-  nh3_gas: varchar("nh3_gas", { length: 100 }).notNull(),
+  nitrogen: varchar("nitrogen", { length: 100 }).notNull(),
+  phosphorus: varchar("phosphorus", { length: 100 }).notNull(),
+  potassium: varchar("potassium", { length: 100 }).notNull(),
   created_at: timestamp("created_at").defaultNow().notNull(),
 });
