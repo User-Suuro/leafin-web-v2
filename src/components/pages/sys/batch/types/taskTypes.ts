@@ -8,6 +8,7 @@ export type Task = {
   status: string;
   relatedFishBatchId: number | null;
   relatedPlantBatchId: number | null;
+  assignedTo: string | null;
 };
 
 export type Batch = {

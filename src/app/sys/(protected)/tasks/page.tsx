@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { CalendarCheck } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -17,6 +17,23 @@ import { useTasks } from "../../../hooks/useTasks";
 
 export default function TaskManagement() {
   const { tasks, batches, fetchBatches, addTask, loading } = useTasks();
+  const [users, setUsers] = useState<{ id: string; name: string }[]>([]);
+
+  // Fetch users on mount
+  useEffect(() => {
+    const fetchUsers = async () => {
+      try {
+        const res = await fetch("/api/users");
+        if (res.ok) {
+          const data = await res.json();
+          setUsers(data);
+        }
+      } catch (err) {
+        console.error("Failed to fetch users", err);
+      }
+    };
+    fetchUsers();
+  }, []);
 
   const [harvestType, setHarvestType] = useState("");
   const [formData, setFormData] = useState({
@@ -26,6 +43,7 @@ export default function TaskManagement() {
     scheduledDate: "",
     scheduledTime: "",
     relatedBatchId: "",
+    assignedTo: "", // New field
   });
 
   const handleChange = (field: string, value: string) => {
@@ -74,6 +92,7 @@ export default function TaskManagement() {
         formData.taskType === "harvest" && harvestType === "plant"
           ? Number(formData.relatedBatchId) || null
           : null,
+      assignedTo: formData.assignedTo || null,
     });
 
     // reset form
@@ -84,6 +103,7 @@ export default function TaskManagement() {
       scheduledDate: "",
       scheduledTime: "",
       relatedBatchId: "",
+      assignedTo: "",
     });
     setHarvestType("");
   };
@@ -184,6 +204,26 @@ export default function TaskManagement() {
                 </div>
               )}
 
+              {/* Assigned To */}
+              <div>
+                <label className="block text-sm font-medium mb-1">Assign To:</label>
+                <Select
+                  value={formData.assignedTo}
+                  onValueChange={(value) => handleChange("assignedTo", value)}
+                >
+                  <SelectTrigger>
+                    <SelectValue placeholder="Select User (Optional)" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {users.map((u) => (
+                      <SelectItem key={u.id} value={u.id}>
+                        {u.name}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+
               {/* Schedule Date */}
               <div>
                 <label className="block text-sm font-medium mb-1">Schedule Date:</label>
@@ -216,6 +256,7 @@ export default function TaskManagement() {
                       scheduledDate: "",
                       scheduledTime: "",
                       relatedBatchId: "",
+                      assignedTo: "",
                     })
                   }
                 >
@@ -248,6 +289,11 @@ export default function TaskManagement() {
                     )}
                     {task.relatedPlantBatchId && (
                       <p className="text-xs">Plant Batch: {task.relatedPlantBatchId}</p>
+                    )}
+                    {task.assignedTo && (
+                      <p className="text-xs text-indigo-600">
+                        Assigned to: {users.find((u) => u.id === task.assignedTo)?.name || "Unknown"}
+                      </p>
                     )}
                     <p className="text-xs text-gray-500">Status: {task.status}</p>
                   </div>
