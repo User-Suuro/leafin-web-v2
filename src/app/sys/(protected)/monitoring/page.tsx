@@ -17,7 +17,7 @@ export default function Monitoring() {
 
   const tabs = useMemo(
     () => [{ id: "timeline", label: "Timeline" },
-    { id: "feeder", label: "Feeder" }, { id: "sensors", label: "Sensors" }, { id: "control", label: "Control" },],
+    { id: "feeder", label: "Feeder" }, { id: "sensors", label: "Sensors" }],
     []
   );
 
@@ -89,9 +89,7 @@ export default function Monitoring() {
             <SensorsSection />
           </TabsContent>
 
-          <TabsContent value="control" className="space-y-6">
-            <MotorControl />
-          </TabsContent>
+
         </Tabs>
       </div>
     </div>
