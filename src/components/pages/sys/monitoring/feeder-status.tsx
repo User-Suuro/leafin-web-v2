@@ -166,31 +166,6 @@ export default function FishFeederSection() {
                 {data.feedQuantity} grams
               </EditableBox>
             </div>
-
-            {/* Actions */}
-            <div className="flex items-center justify-between pt-4 pointer-events-auto">
-              <div className="flex items-center gap-3">
-                <span className="text-sm text-gray-600">
-                  Manual Feeding:
-                </span>
-                <Button
-                  className="bg-green-500 hover:bg-green-600"
-                  disabled={!data.isActive}
-                  onClick={handleManualFeed}
-                >
-                  Feed Now
-                </Button>
-              </div>
-
-              <div className="pointer-events-auto">
-                <Button
-                  variant={data.isActive ? "destructive" : "default"}
-                  onClick={() => updateSettings({ isActive: !data.isActive })}
-                >
-                  {data.isActive ? "Disable Feeder" : "Enable Feeder"}
-                </Button>
-              </div>
-            </div>
           </div>
         </div>
       </Card>

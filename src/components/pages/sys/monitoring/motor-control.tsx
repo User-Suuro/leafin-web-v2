@@ -71,7 +71,8 @@ export function MotorControl() {
                 </CardContent>
             </Card>
 
-            {/* Feeder Control */}
+
+            {/* Feeder Control
             <Card>
                 <CardHeader>
                     <CardTitle>Feeder</CardTitle>
@@ -90,6 +91,7 @@ export function MotorControl() {
                     </button>
                 </CardContent>
             </Card>
+            */}
         </div>
     );
 }
